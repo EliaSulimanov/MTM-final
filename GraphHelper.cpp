@@ -2,6 +2,10 @@
 #include <stack>
 
 bool gcalc::GraphHelper::vertexNameCheck(std::string vertex_name) {
+	// TODO: add check for function names.
+	if (vertex_name.empty()) {
+		throw gcalc::FatalGraphException("Fatal error- empty vertex name.");
+	}
 	std::stack<char> pranthesis_stack;
 	for(char ch : vertex_name)
 	{
