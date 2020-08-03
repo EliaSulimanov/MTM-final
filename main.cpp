@@ -19,6 +19,7 @@ void gcalcLoop(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map)
 	}
 }
 
+// TODO: delete.
 void vertexNameTest() {
 	try {
 		std::cout << "Hello" << std::endl;
@@ -78,6 +79,7 @@ void vertexNameTest() {
 	}
 }
 
+// TODO: delete.
 void graphTest() {
 	try
 	{
@@ -236,6 +238,17 @@ void graphTest() {
 		G2.insertEdge("LALALA", "hop");
 
 		G3 = gcalc::unite(G1, G2);
+	}
+	catch (std::exception& e)
+	{
+		std::cout << "Error: " << e.what() << std::endl;
+	}
+
+	try
+	{
+		gcalc::Graph G1;
+
+		G1.insertVertex("gcalcLoop");
 	}
 	catch (std::exception& e)
 	{
