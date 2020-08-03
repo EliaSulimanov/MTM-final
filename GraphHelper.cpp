@@ -1,10 +1,18 @@
 #include "GraphHelper.h"
 #include <stack>
+#include <set>
+
+const std::set<std::string> invalid_names = {"Graph", "operator", "insertVertex"
+	"insertEdge", "unite", "GraphException", "what", "FatalGraphException", "vertexNameCheck",
+	"splitCommand", "gcalcLoop", "main", "intersect"};
 
 bool gcalc::GraphHelper::vertexNameCheck(std::string vertex_name) {
-	// TODO: add check for function names.
 	if (vertex_name.empty()) {
 		throw gcalc::FatalGraphException("Fatal error- empty vertex name.");
+	}
+	if (invalid_names.find(vertex_name) != invalid_names.end()) // function name
+	{
+		throw gcalc::GraphException("Bad vertex name");
 	}
 	std::stack<char> pranthesis_stack;
 	for(char ch : vertex_name)
