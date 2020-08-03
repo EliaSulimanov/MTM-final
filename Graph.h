@@ -20,8 +20,10 @@ namespace gcalc
 		void insertVertex(std::string vertex);
 		void insertEdge(std::string src, std::string dest);
 		friend Graph unite(const Graph& lhg, const Graph& rhg);
+		friend Graph intersect(const Graph& lhg, const Graph& rhg);
 	};
 	Graph unite(const Graph& lhg, const Graph& rhg);
+	Graph intersect(const Graph& lhg, const Graph& rhg);
 }
 #endif
 

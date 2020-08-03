@@ -71,3 +71,25 @@ gcalc::Graph gcalc::unite(const Graph& lhg, const Graph& rhg)
 
 	return result;
 }
+
+gcalc::Graph gcalc::intersect(const Graph& lhg, const Graph& rhg)
+{
+	gcalc::Graph result;
+	for (auto vertex : lhg.vertex_set)
+	{
+		if (rhg.vertex_set.find(vertex) != rhg.vertex_set.end()) // exists in both
+		{
+			result.insertVertex(vertex);
+		}
+	}
+
+	for (auto edge : lhg.edge_set)
+	{
+		if (rhg.edge_set.find(edge) != rhg.edge_set.end()) // exists in both
+		{
+			result.insertEdge(edge[0], edge[1]);
+		}
+	}
+
+	return result;
+}
