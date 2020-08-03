@@ -83,9 +83,32 @@ gcalc::Graph gcalc::intersect(const Graph& lhg, const Graph& rhg)
 		}
 	}
 
-	for (auto edge : lhg.edge_set)
+	for (auto edge : lhg.edge_set) // TODO: check if this works as expected
 	{
 		if (rhg.edge_set.find(edge) != rhg.edge_set.end()) // exists in both
+		{
+			result.insertEdge(edge[0], edge[1]);
+		}
+	}
+
+	return result;
+}
+
+gcalc::Graph gcalc::diff(const Graph& lhg, const Graph& rhg)
+{
+	gcalc::Graph result;
+	for (auto vertex : lhg.vertex_set)
+	{
+		if (rhg.vertex_set.find(vertex) == rhg.vertex_set.end()) // exists on left graph but not on right
+		{
+			result.insertVertex(vertex);
+		}
+	}
+
+	for (auto edge : lhg.edge_set) // TODO: check if this works as expected
+	{
+		if (result.vertex_set.find(edge[0]) != result.vertex_set.end() &&
+			result.vertex_set.find(edge[1]) != result.vertex_set.end()) // edge vertexes are in the result graph
 		{
 			result.insertEdge(edge[0], edge[1]);
 		}
