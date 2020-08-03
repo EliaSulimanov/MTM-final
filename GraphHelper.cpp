@@ -34,3 +34,12 @@ bool gcalc::GraphHelper::vertexNameCheck(std::string vertex_name) {
 	}
 	return true;
 }
+
+std::vector<std::string> gcalc::GraphHelper::splitCommand(std::string command)
+{
+	std::istringstream buf(command);
+	std::istream_iterator<std::string> beg(buf), end;
+	std::vector<std::string> split_command(beg, end);
+
+	return split_command;
+}

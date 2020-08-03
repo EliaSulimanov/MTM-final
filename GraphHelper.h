@@ -4,13 +4,18 @@
 #include <string>
 #include <cctype>
 #include <iostream>
+#include <vector>
+#include <sstream>
+#include <iterator>
+
 #include "GraphException.h"
 
 namespace gcalc {
 	class GraphHelper
 	{
 	public:
-		bool static vertexNameCheck(std::string vertex_name);
+		static bool vertexNameCheck(std::string vertex_name);
+		static std::vector<std::string> splitCommand(std::string command);
 	};
 }
 
