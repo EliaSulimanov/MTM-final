@@ -1,26 +1,21 @@
 #include "GraphHelper.h"
+#include "Graph.h"
 
 #include <iostream>
 #include <vector>
 #include <string>
-#include <sstream>
-#include <iterator>
+#include <map>
 
-int main() {
-	while (true) 
+void gcalcLoop(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map) {
+	while (true)
 	{
-		std::cout << "Gcalc> ";
-		
 		std::string command;
-		std::cin >> command;
 
-		std::istringstream buf(command);
-		std::istream_iterator<std::string> beg(buf), end;
+		std::cout << "Gcalc> ";
 
-		std::vector<std::string> split_command(beg, end);
+		std::getline(std::cin, command);
+		std::vector<std::string> split_command = gcalc::GraphHelper::splitCommand(command);
 
-		for (auto& s : split_command)
-			std::cout << '"' << s << '"' << '\n';
 
 	}
 }
@@ -82,4 +77,10 @@ void vertexNameTest() {
 	catch (std::exception& e) {
 		std::cout << "Error: " << e.what() << std::endl;
 	}
+}
+
+int main() {
+	//map graphs name and pointer to the graph
+	std::map<std::string, std::shared_ptr<gcalc::Graph>> symbol_map;
+	gcalcLoop(symbol_map);
 }
