@@ -2,7 +2,7 @@
 #include <stack>
 #include <set>
 
-const std::set<std::string> invalid_names = {"Graph", "operator", "insertVertex"
+const std::set<std::string> invalid_names = {"Graph", "operator", "insertVertex",
 	"insertEdge", "unite", "GraphException", "what", "FatalGraphException", "vertexNameCheck",
 	"splitCommand", "gcalcLoop", "main", "intersect"};
 
