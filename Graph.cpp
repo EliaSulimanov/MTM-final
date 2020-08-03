@@ -121,6 +121,8 @@ gcalc::Graph gcalc::cross(const Graph& lhg, const Graph& rhg)
 {
 	gcalc::Graph result;
 	// TODO: check for same vertex twice
+	std::string left_v;
+
 	for (auto left_v : lhg.vertex_set)
 	{
 		for (auto right_v : rhg.vertex_set)
@@ -132,7 +134,7 @@ gcalc::Graph gcalc::cross(const Graph& lhg, const Graph& rhg)
 	{
 		for (auto left_v : lhg.vertex_set)
 		{
-			result.insertVertex("[" + right_v + ";" + left_v + "]");
+			result.insertVertex("[" + left_v + ";" + right_v + "]");
 		}
 	}
 
