@@ -79,12 +79,176 @@ void vertexNameTest() {
 }
 
 void graphTest() {
-	gcalc::Graph G1("G1");
-	gcalc::Graph G2("G2");
+	try
+	{
+		gcalc::Graph G1;
+		gcalc::Graph G2;
+		gcalc::Graph G3;
+
+		G1.insertVertex("Hello");
+		G2.insertVertex("Hello");
+
+		G3 = gcalc::unite(G1, G2);
+	}
+	catch (std::exception& e)
+	{
+		std::cout << "Error: " << e.what() << std::endl;
+	}
+
+	try
+	{
+		gcalc::Graph G1;
+		gcalc::Graph G2;
+		gcalc::Graph G3;
+
+		G1.insertVertex("LALALA");
+		G1.insertVertex("hop");
+		G1.insertVertex("123[]cc[[s]]");
+		G1.insertVertex("123");
+		G1.insertEdge("LALALA", "hop");
+		G1.insertEdge("LALALA", "123");
+		G1.insertEdge("123", "LALALA");
+		G1.insertEdge("123[]cc[[s]]", "123");
+
+		G2.insertVertex("2LALALA");
+		G2.insertVertex("2hop");
+		G2.insertVertex("2123[]cc[[s]]");
+		G2.insertVertex("123");
+		G2.insertEdge("2LALALA", "2hop");
+		G2.insertEdge("2LALALA", "123");
+		G2.insertEdge("123", "2LALALA");
+		G2.insertEdge("2123[]cc[[s]]", "123");
+
+		G3 = gcalc::unite(G1, G2);
+	}
+	catch (std::exception& e)
+	{
+		std::cout << "Error: " << e.what() << std::endl;
+	}
+
+	try
+	{
+		gcalc::Graph G1;
+
+		G1.insertVertex("Hel lo");
+	}
+	catch (std::exception& e)
+	{
+		std::cout << "Error: " << e.what() << std::endl;
+	}
+
+	try
+	{
+		gcalc::Graph G1;
+
+		G1.insertVertex("Hello");
+		G1.insertEdge("Hello", "Hello");
+	}
+	catch (std::exception& e)
+	{
+		std::cout << "Error: " << e.what() << std::endl;
+	}
+
+	try
+	{
+		gcalc::Graph G1;
+
+		G1.insertVertex("Hello");
+		G1.insertEdge("Hello", "H2ello");
+	}
+	catch (std::exception& e)
+	{
+		std::cout << "Error: " << e.what() << std::endl;
+	}
+
+	try
+	{
+		gcalc::Graph G1;
+
+		G1.insertVertex("Hello");
+		G1.insertEdge("Hello", "H ello");
+	}
+	catch (std::exception& e)
+	{
+		std::cout << "Error: " << e.what() << std::endl;
+	}
+
+	try
+	{
+		gcalc::Graph G1;
+
+		G1.insertVertex("Hello");
+		G1.insertEdge("He llo", "H ello");
+	}
+	catch (std::exception& e)
+	{
+		std::cout << "Error: " << e.what() << std::endl;
+	}
+
+	try
+	{
+		gcalc::Graph G1;
+
+		G1.insertVertex("Hello");
+		G1.insertEdge("", "H ello");
+	}
+	catch (std::exception& e)
+	{
+		std::cout << "Error: " << e.what() << std::endl;
+	}
+
+	try
+	{
+		gcalc::Graph G1;
+
+		G1.insertVertex("Hello");
+		G1.insertEdge("", "");
+	}
+	catch (std::exception& e)
+	{
+		std::cout << "Error: " << e.what() << std::endl;
+	}
+	
+	try
+	{
+		gcalc::Graph G1;
+
+		G1.insertVertex("Hello");
+		G1.insertEdge("$", "#");
+	}
+	catch (std::exception& e)
+	{
+		std::cout << "Error: " << e.what() << std::endl;
+	}
+
+	try
+	{
+		gcalc::Graph G1;
+		gcalc::Graph G2;
+		gcalc::Graph G3;
+
+		G1.insertVertex("LALALA");
+		G1.insertVertex("hop");
+		G1.insertEdge("hop", "LALALA");
+
+		G2.insertVertex("LALALA");
+		G2.insertVertex("hop");
+		G2.insertEdge("LALALA", "hop");
+
+		G3 = gcalc::unite(G1, G2);
+	}
+	catch (std::exception& e)
+	{
+		std::cout << "Error: " << e.what() << std::endl;
+	}
+
+	std::cout << "Done!";
 }
 
 int main() {
 	//map graphs name and pointer to the graph
-	//std::map<std::string, std::shared_ptr<gcalc::Graph>> symbol_map;
-	//gcalcLoop(symbol_map);
+	/*std::map<std::string, std::shared_ptr<gcalc::Graph>> symbol_map;
+	gcalcLoop(symbol_map);*/
+
+	graphTest();
 }
