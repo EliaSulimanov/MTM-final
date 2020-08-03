@@ -22,10 +22,12 @@ namespace gcalc
 		friend Graph unite(const Graph& lhg, const Graph& rhg);
 		friend Graph intersect(const Graph& lhg, const Graph& rhg);
 		friend Graph diff(const Graph& lhg, const Graph& rhg);
+		friend Graph cross(const Graph& lhg, const Graph& rhg);
 	};
 	Graph unite(const Graph& lhg, const Graph& rhg);
 	Graph intersect(const Graph& lhg, const Graph& rhg);
 	Graph diff(const Graph& lhg, const Graph& rhg);
+	Graph cross(const Graph& lhg, const Graph& rhg);
 }
 #endif
 

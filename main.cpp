@@ -258,10 +258,29 @@ void graphTest() {
 	std::cout << "Done!";
 }
 
+void crossTest()
+{
+	try
+	{
+		gcalc::Graph G1;
+		G1.insertVertex("a");
+		G1.insertVertex("b");
+		gcalc::Graph G2;
+		G2.insertVertex("C");
+		G2.insertVertex("D");
+
+		gcalc::Graph G3 = gcalc::cross(G1, G2);
+	}
+	catch (std::exception& e)
+	{
+		std::cout << "Error: " << e.what() << std::endl;
+	}
+}
+
 int main() {
 	//map graphs name and pointer to the graph
 	/*std::map<std::string, std::shared_ptr<gcalc::Graph>> symbol_map;
 	gcalcLoop(symbol_map);*/
 
-	graphTest();
+	crossTest();
 }

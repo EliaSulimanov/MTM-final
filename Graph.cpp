@@ -116,3 +116,25 @@ gcalc::Graph gcalc::diff(const Graph& lhg, const Graph& rhg)
 
 	return result;
 }
+
+gcalc::Graph gcalc::cross(const Graph& lhg, const Graph& rhg)
+{
+	gcalc::Graph result;
+	// TODO: check for same vertex twice
+	for (auto left_v : lhg.vertex_set)
+	{
+		for (auto right_v : rhg.vertex_set)
+		{
+			result.insertVertex("[" + left_v + ";" + right_v + "]");
+		}
+	}
+	for (auto right: rhg.vertex_set)
+	{
+		for (auto left_v : lhg.vertex_set)
+		{
+			result.insertVertex("[" + right_v + ";" + left_v + "]");
+		}
+	}
+
+	return result;
+}
