@@ -16,8 +16,9 @@ namespace gcalc
 		Graph();
 		Graph(const Graph& rhg);
 		~Graph() = default;
-		Graph& operator=(const Graph& rhg); // TODO: this.
+		Graph& operator=(const Graph& rhg);
 		void insertVertex(std::string vertex);
+		void insertEdge(std::string src, std::string dest);
 		friend Graph unite(const Graph& lhg, const Graph& rhg);
 	};
 	Graph unite(const Graph& lhg, const Graph& rhg);
