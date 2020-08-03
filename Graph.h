@@ -16,8 +16,9 @@ namespace gcalc
 	public:
 		Graph() = delete;
 		Graph(std::string name);
-		~Graph();
-		Graph& operator=(const Graph& rhg);
+		Graph(const Graph& rhg) = delete;
+		~Graph() = default;
+		Graph& operator=(const Graph& rhg); // TODO: this.
 	};
 }
 #endif
