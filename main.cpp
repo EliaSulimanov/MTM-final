@@ -12,7 +12,6 @@ void gcalcLoop(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map)
 		std::string command;
 
 		std::cout << "Gcalc> ";
-
 		std::getline(std::cin, command);
 		std::vector<std::string> split_command = gcalc::GraphHelper::splitCommand(command);
 
@@ -79,8 +78,13 @@ void vertexNameTest() {
 	}
 }
 
+void graphTest() {
+	gcalc::Graph G1("G1");
+	gcalc::Graph G2("G2");
+}
+
 int main() {
 	//map graphs name and pointer to the graph
-	std::map<std::string, std::shared_ptr<gcalc::Graph>> symbol_map;
-	gcalcLoop(symbol_map);
+	//std::map<std::string, std::shared_ptr<gcalc::Graph>> symbol_map;
+	//gcalcLoop(symbol_map);
 }
