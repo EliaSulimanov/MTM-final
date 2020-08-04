@@ -6,11 +6,11 @@
 #include <string>
 #include <map>
 #include <memory>
+#include <algorithm>
 
 void gcalcLoop(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map);
 void deleteGraph(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, std::string GraphName);
-void executeCommand(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, std::vector<std::string> split_command);
-
+void eval(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, std::vector<std::string> command);
 
 void gcalcLoop(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map) {
 	while (true)
@@ -21,7 +21,7 @@ void gcalcLoop(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map)
 		std::getline(std::cin, command);
 		std::vector<std::string> split_command = gcalc::GraphHelper::splitCommand(command);
 		
-		if (split_command.size() == 0) 
+		if (split_command.size() == 0)
 		{
 			continue;
 		}
@@ -45,25 +45,13 @@ void gcalcLoop(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map)
 					}
 				}
 			}
-			else // it is a one block command (no white spaces)
+			else
 			{
-				try 
-				{
-					executeCommand(symbol_map, split_command); // TODO: continue
-				}
-				catch (gcalc::FatalGraphException())
-				{
-					// TODO: write about that error and close the program.
-					break;
-				}
-				catch (std::exception& e)
-				{
-					std::cout << "Error: " << e.what() << std::endl;
-				}
+				std::cout << "Error: Unrecognized command" << std::endl;
 			}
 		}
 		else {
-			
+			// TODO
 		}
 	}
 }
@@ -78,33 +66,42 @@ void deleteGraph(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_ma
 	{}
 }
 
-void executeCommand(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, std::vector<std::string> split_command)
+void eval(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, std::vector<std::string> command)
 {
-	if (split_command[0].rfind("print(", 0) != std::string::npos)
+	try
 	{
-		if (split_command[0][split_command[0].size() - 1] != ')') 
+		if (gcalc::GraphHelper::checkNoDuplicateCommands(command) && gcalc::GraphHelper::checkSpecialChars(command)) // TODO: see if this is a good check
 		{
-			throw gcalc::GraphException("Invalid syntax");
-		}
-		else
-		{
+			if (command.size() == 4) //easy command, no graph evaluation
+			{
+				if (command[0].compare("print") == 0)
+				{
+					auto graph_name = symbol_map.find(command[2]);
+					if (graph_name != symbol_map.end()) // Variable exist
+					{
+						if (graph_name->second != nullptr)
+						{
+							gcalc::print(*(graph_name->second));
+						}
+						else // Lost a graph
+						{
 
+						}
+					} 
+					else
+					{
+					}
+				}
+			}
+			else // complex command
+			{
+				// TODO
+			}
 		}
 	}
-	else if (split_command[0].rfind("delete(", 0) != std::string::npos)
+	catch (std::exception& e)
 	{
-		if (split_command[0][split_command[0].size() - 1] != ')')
-		{
-			throw gcalc::GraphException("Invalid syntax");
-		}
-		else
-		{
-
-		}
-	}
-	else // Must be assignment
-	{
-
+		std::cout << "Error: " << e.what() << std::endl;
 	}
 }
 
