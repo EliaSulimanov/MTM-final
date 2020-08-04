@@ -17,6 +17,9 @@ namespace gcalc {
 	public:
 		static bool vertexNameCheck(std::string vertex_name);
 		static std::vector<std::string> splitCommand(std::string command);
+		static bool checkCommand(std::vector<std::string> split_command);
+		static bool checkGraphParentheses(std::string normal_command);
+		static bool checkParenthesesBalance(std::string normal_command);
 	};
 }
 
