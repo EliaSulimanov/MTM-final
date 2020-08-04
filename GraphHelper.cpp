@@ -4,7 +4,7 @@
 
 const std::set<std::string> invalid_names = {"Graph", "operator", "insertVertex",
 	"insertEdge", "unite", "GraphException", "what", "FatalGraphException", "vertexNameCheck",
-	"splitCommand", "gcalcLoop", "main", "intersect", "diff"};
+	"splitCommand", "gcalcLoop", "main", "intersect", "diff", "cross", "complement"};
 
 bool gcalc::GraphHelper::vertexNameCheck(std::string vertex_name) {
 	if (vertex_name.empty()) {
