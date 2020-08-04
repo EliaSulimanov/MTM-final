@@ -25,9 +25,9 @@ void gcalc::Graph::insertVertex(std::string vertex)
 {
 	if (gcalc::GraphHelper::vertexNameCheck(vertex))
 	{
-		if (this->vertex_set.find(vertex) != this->vertex_set.end())
+		if (this->vertex_set.find(vertex) != this->vertex_set.end()) // vertex already exists
 		{
-			throw gcalc::GraphException("Invalid graph syntax.");
+			throw gcalc::GraphException("Invalid graph syntax - vertex already exists");
 		}
 		else 
 		{
@@ -42,18 +42,18 @@ void gcalc::Graph::insertEdge(std::string src, std::string dest)
 	{
 		if (src.compare(dest) == 0) // self loop
 		{
-			throw gcalc::GraphException("Invalid graph syntax.");
+			throw gcalc::GraphException("Invalid graph syntax - self loop edge not allowed");
 		}
 		else if (this->vertex_set.find(src) == this->vertex_set.end() || this->vertex_set.find(dest) == this->vertex_set.end()) // vertex not exist
 		{
-			throw gcalc::GraphException("Invalid graph syntax.");
+			throw gcalc::GraphException("Invalid graph syntax - edge vertex not exist");
 		}
 		else
 		{
 			std::vector<std::string> temp {src, dest};
 			if (this->edge_set.find(temp) != this->edge_set.end()) // edge exist
 			{
-				throw gcalc::GraphException("Invalid graph syntax.");
+				throw gcalc::GraphException("Invalid graph syntax - edge already exist");
 			}
 			else
 			{
@@ -119,9 +119,7 @@ gcalc::Graph gcalc::diff(const Graph& lhg, const Graph& rhg)
 
 gcalc::Graph gcalc::cross(const Graph& lhg, const Graph& rhg)
 {
-	gcalc::Graph result;
-	// TODO: check for same vertex twice
-	std::string left_v;
+	gcalc::Graph result; // TODO: test this. Not sure about the product
 
 	for (auto left_v : lhg.vertex_set)
 	{
@@ -130,13 +128,45 @@ gcalc::Graph gcalc::cross(const Graph& lhg, const Graph& rhg)
 			result.insertVertex("[" + left_v + ";" + right_v + "]");
 		}
 	}
-	for (auto right: rhg.vertex_set)
+
+	for (auto left_e : lhg.edge_set)
 	{
-		for (auto left_v : lhg.vertex_set)
+		for (auto right_e : rhg.edge_set)
 		{
-			result.insertVertex("[" + left_v + ";" + right_v + "]");
+			result.insertEdge("[" + left_e[0] + ";" + right_e[0] + "]", "[" + left_e[1] + ";" + right_e[1] + "]"); // TODO: check if vector is the right size
 		}
 	}
 
 	return result;
 }
+
+gcalc::Graph gcalc::complement(const Graph& grap)
+{
+	gcalc::Graph result; // TODO: check on complex graphs
+	result.vertex_set = grap.vertex_set; // TODO: check if it alloc new memory for this or use the same
+	for (auto left_v : grap.vertex_set) 
+	{
+		for (auto right_v : grap.vertex_set)
+		{
+			if (left_v.compare(right_v) == 0) // No self loops allowed
+			{
+				continue;
+			}
+			else
+			{
+				std::vector<std::string> temp = { left_v , right_v };
+				
+				if (grap.edge_set.find(temp) == grap.edge_set.end()) // Edge is not in the original graph
+				{
+					result.insertEdge(left_v, right_v);
+				}
+				else
+				{
+					continue;
+				}
+			}
+		}
+	}
+	return result;
+}
+
