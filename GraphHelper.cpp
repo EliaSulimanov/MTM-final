@@ -9,6 +9,8 @@ const std::set<std::string> invalid_names = {"Graph", "operator", "insertVertex"
 	"reset", "who", "print", "delete", "deleteGraph", "executeCommand", "checkParenthesesBalance",
 	"checkGraphParentheses", "checkCommand"};
 
+const std::set<std::string> special_chars = {"=", "{", "}", ",", "|", "<", ">", "(", ")"};
+
 bool gcalc::GraphHelper::vertexNameCheck(std::string vertex_name) {
 	if (vertex_name.empty()) {
 		throw gcalc::FatalGraphException("Fatal error- empty vertex name.");
@@ -168,6 +170,27 @@ bool gcalc::GraphHelper::checkSpecialChars(std::vector<std::string> command)
 			throw gcalc::GraphException("Invalid syntax");
 		}
 	}
+
+	bool last_word_was_sign = true;
+	for (auto word : command)
+	{
+		if (special_chars.find(word) != special_chars.end()) // word is a sign
+		{
+			if (last_word_was_sign)
+			{
+				throw gcalc::GraphException("Invalid syntax");
+			}
+			else
+			{
+				last_word_was_sign = true;
+			}
+		}
+		else // word is command or variable name
+		{
+			last_word_was_sign = false;
+		}
+	}
+
 	return true;
 }
 
