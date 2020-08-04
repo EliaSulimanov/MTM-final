@@ -16,11 +16,14 @@ namespace gcalc {
 	{
 	private:
 		static bool checkGraphParentheses(std::string normal_command);
-		static bool checkParenthesesBalance(std::string normal_command);
+		static size_t findNextTokenPos(std::string command);
+		static void clearWhiteSpaces(std::string& command);
 	public:
+		static bool checkParenthesesBalance(std::string normal_command);
 		static bool vertexNameCheck(std::string vertex_name);
-		static std::vector<std::string> splitCommand(std::string command);
-		static bool checkCommand(std::vector<std::string> split_command);
+		static std::vector<std::string> splitCommand(const std::string command);
+		static bool checkNoDuplicateCommands(std::vector<std::string> command);
+		static bool checkSpecialChars(std::vector<std::string> command);
 	};
 }
 
