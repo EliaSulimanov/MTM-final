@@ -17,3 +17,5 @@
 *.db
 .vs/final/v16/.suo
 *.config
+*.json
+*.sqlite

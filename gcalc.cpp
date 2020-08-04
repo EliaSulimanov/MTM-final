@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <memory>
 
 void gcalcLoop(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map) {
 	while (true)
@@ -14,8 +15,6 @@ void gcalcLoop(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map)
 		std::cout << "Gcalc> ";
 		std::getline(std::cin, command);
 		std::vector<std::string> split_command = gcalc::GraphHelper::splitCommand(command);
-
-
 	}
 }
 
