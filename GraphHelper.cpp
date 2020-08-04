@@ -50,35 +50,124 @@ bool gcalc::GraphHelper::vertexNameCheck(std::string vertex_name) {
 	return true;
 }
 
-std::vector<std::string> gcalc::GraphHelper::splitCommand(std::string command)
-{
-	std::istringstream buf(command);
-	std::istream_iterator<std::string> beg(buf), end;
-	std::vector<std::string> split_command(beg, end);
+size_t gcalc::GraphHelper::findNextTokenPos(std::string command) {
+	char ch;
+	size_t i = 0;
+	for (; i < command.size(); i++)
+	{
+		ch = command[i];
+		if (ch == '=' || ch == '{' || ch == '}' || ch == ',' || ch == '|' || ch == '<' || ch == '>' || ch == '(' || ch == ')')
+		{
+			return i;
+		}
+	}
+	return i;
+}
 
+void gcalc::GraphHelper::clearWhiteSpaces(std::string& command)
+{
+	size_t left = command.find_first_not_of(' ');
+	size_t right = command.find_last_not_of(' ');
+	command.erase(0, left);
+	command.erase(right + 1);
+}
+
+std::vector<std::string> gcalc::GraphHelper::splitCommand(const std::string command)
+{
+	std::vector<std::string> split_command;
+	if (checkParenthesesBalance(command))
+	{
+		std::string temp_command = command;
+
+		while (!temp_command.empty())
+		{
+			size_t len = findNextTokenPos(temp_command);
+			std::string sub_command = temp_command.substr(0, len);
+			if (!sub_command.empty() && sub_command.find_first_not_of(' ') != std::string::npos)
+			{
+				clearWhiteSpaces(sub_command);
+				split_command.push_back(sub_command);
+			}
+
+			temp_command.erase(0, len);
+			std::string oper = temp_command.substr(0, 1);
+			if (!oper.empty() && oper.find_first_not_of(' ') != std::string::npos)
+			{
+				clearWhiteSpaces(oper);
+				split_command.push_back(oper);
+			}
+			temp_command.erase(0, 1);
+		}
+	}
 	return split_command;
 }
 
-bool gcalc::GraphHelper::checkCommand(std::vector<std::string> split_command)
+bool gcalc::GraphHelper::checkNoDuplicateCommands(std::vector<std::string> command)
 {
-	std::string normal_command;
-	normal_command.append(split_command.begin(), split_command.end());
-
-	if (!isalpha(normal_command[0])) // Must start with alphabet char.
+	int num_of_print = 0;
+	int num_of_delete = 0;
+	int num_of_equal = 0;
+	int num_of_who = 0;
+	int num_of_quit = 0;
+	int num_of_reset = 0;
+	for (auto word : command)
 	{
-		throw gcalc::GraphException("Invalid syntax");
+		if (word.compare("print") == 0)
+		{
+			num_of_print++;
+		}
+		else if (word.compare("delete") == 0)
+		{
+			num_of_delete++;
+		}
+		else if (word.compare("=") == 0)
+		{
+			num_of_equal++;
+		}
+		else if (word.compare("who") == 0)
+		{
+			num_of_who++;
+		}
+		else if (word.compare("quit") == 0)
+		{
+			num_of_quit++;
+		}
+		else if (word.compare("reset") == 0)
+		{
+			num_of_reset++;
+		}
 	}
 
-	if (std::count(normal_command.begin(), normal_command.end(), '=') > 1)
+	if (num_of_who > 0 || num_of_quit > 0 || num_of_reset > 0)
 	{
-		throw gcalc::GraphException("Invalid syntax");
+		throw gcalc::GraphException("Invalid syntax, only one command per line allowed");
 	}
 
-	if (checkParenthesesBalance(normal_command))
+	if (num_of_print > 1 || num_of_delete > 1 || num_of_equal > 1)
 	{
-		return true; // TODO: check if this is enouth
+		throw gcalc::GraphException("Invalid syntax, only one command per line allowed");
 	}
 
+	if ((num_of_print == 1 && (num_of_delete > 0 || num_of_equal > 0)) ||
+		(num_of_delete == 1 && (num_of_print > 0 || num_of_equal > 0)) ||
+		(num_of_equal == 1 && (num_of_delete > 0 || num_of_print > 0)))
+	{
+		throw gcalc::GraphException("Invalid syntax, only one command per line allowed");
+
+	}
+
+	return true;
+}
+
+bool gcalc::GraphHelper::checkSpecialChars(std::vector<std::string> command)
+{
+	for (auto word : command)
+	{
+		if (word.find(" ") != word.npos)
+		{
+			throw gcalc::GraphException("Invalid syntax");
+		}
+	}
 	return true;
 }
 
@@ -177,4 +266,3 @@ bool gcalc::GraphHelper::checkParenthesesBalance(std::string normal_command)
 	}
 	return true;
 }
-
