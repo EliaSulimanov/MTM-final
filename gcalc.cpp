@@ -118,7 +118,18 @@ void eval(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, std:
 				// TODO
 			}*/
 
+			if (command[0].compare("print") == 0)
+			{
+				
+			}
+			else if (command[0].compare("delete") == 0)
+			{
+				
+			}
+			else // assignment
+			{
 
+			}
 		}
 	}
 	catch (gcalc::FatalGraphException& e)
