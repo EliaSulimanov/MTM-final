@@ -85,11 +85,31 @@ void eval(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, std:
 						}
 						else // Lost a graph
 						{
-
+							throw gcalc::FatalGraphException("Memory error occurred");
 						}
 					} 
 					else
 					{
+						throw gcalc::GraphException("Undefined variable");
+					}
+				}
+				else if (command[0].compare("delete") == 0)
+				{
+					auto graph_name = symbol_map.find(command[2]);
+					if (graph_name != symbol_map.end()) // Variable exist
+					{
+						if (graph_name->second != nullptr)
+						{
+							deleteGraph(symbol_map, graph_name->first); // TODO: check if memory leak
+						}
+						else // Lost a graph
+						{
+							throw gcalc::FatalGraphException("Memory error occurred");
+						}
+					}
+					else
+					{
+						throw gcalc::GraphException("Undefined variable");
 					}
 				}
 			}
