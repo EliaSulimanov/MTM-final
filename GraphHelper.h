@@ -8,6 +8,7 @@
 #include <sstream>
 #include <iterator>
 
+#include "Graph.h"
 #include "GraphException.h"
 
 namespace gcalc {
