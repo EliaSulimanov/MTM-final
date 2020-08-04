@@ -18,6 +18,7 @@ namespace gcalc {
 		static bool checkGraphParentheses(std::string normal_command);
 		static size_t findNextTokenPos(std::string command);
 		static void clearWhiteSpaces(std::string& command);
+		static void clearChar(std::string& command, char ch);
 	public:
 		static bool checkParenthesesBalance(std::string normal_command);
 		static bool vertexNameCheck(std::string vertex_name);

@@ -1,6 +1,7 @@
 #include "GraphHelper.h"
 #include <stack>
 #include <set>
+#include <cctype>
 #include <algorithm>
 
 const std::set<std::string> invalid_names = {"Graph", "operator", "insertVertex",
@@ -9,7 +10,7 @@ const std::set<std::string> invalid_names = {"Graph", "operator", "insertVertex"
 	"reset", "who", "print", "delete", "deleteGraph", "executeCommand", "checkParenthesesBalance",
 	"checkGraphParentheses", "checkCommand"};
 
-const std::set<std::string> special_chars = {"=", "{", "}", ",", "|", "<", ">", "(", ")"};
+const std::set<std::string> special_chars = {"=", "{", "}", ",", "|", "<", ">", "(", ")", "!", "+", "^", "-", "*"};
 
 bool gcalc::GraphHelper::vertexNameCheck(std::string vertex_name) {
 	if (vertex_name.empty()) {
@@ -58,7 +59,7 @@ size_t gcalc::GraphHelper::findNextTokenPos(std::string command) {
 	for (; i < command.size(); i++)
 	{
 		ch = command[i];
-		if (ch == '=' || ch == '{' || ch == '}' || ch == ',' || ch == '|' || ch == '<' || ch == '>' || ch == '(' || ch == ')')
+		if (special_chars.find(std::to_string(ch)) != special_chars.end())
 		{
 			return i;
 		}
@@ -68,8 +69,18 @@ size_t gcalc::GraphHelper::findNextTokenPos(std::string command) {
 
 void gcalc::GraphHelper::clearWhiteSpaces(std::string& command)
 {
-	size_t left = command.find_first_not_of(' ');
-	size_t right = command.find_last_not_of(' ');
+	clearChar(command, ' ');
+	clearChar(command, '\t');
+	clearChar(command, '\n');
+	clearChar(command, '\v');
+	clearChar(command, '\f');
+	clearChar(command, '\r');
+}
+
+void gcalc::GraphHelper::clearChar(std::string& command, char ch)
+{
+	size_t left = command.find_first_not_of(ch);
+	size_t right = command.find_last_not_of(ch);
 	command.erase(0, left);
 	command.erase(right + 1);
 }
@@ -165,7 +176,12 @@ bool gcalc::GraphHelper::checkSpecialChars(std::vector<std::string> command)
 {
 	for (auto word : command)
 	{
-		if (word.find(" ") != word.npos)
+		if (word.find(" ") != word.npos ||
+			word.find("\t") != word.npos ||
+			word.find("\n") != word.npos ||
+			word.find("\v") != word.npos ||
+			word.find("\f") != word.npos ||
+			word.find("\r") != word.npos)
 		{
 			throw gcalc::GraphException("Invalid syntax");
 		}
@@ -174,8 +190,13 @@ bool gcalc::GraphHelper::checkSpecialChars(std::vector<std::string> command)
 	bool last_word_was_sign = true;
 	for (auto word : command)
 	{
-		if (special_chars.find(word) != special_chars.end()) // word is a sign
+		auto word_iter = special_chars.find(word);
+		if (word_iter != special_chars.end()) // word is a sign
 		{
+			if (word.compare("!") == 0)
+			{
+				if(word_iter) // TODO: code the rules
+			}
 			if (last_word_was_sign)
 			{
 				throw gcalc::GraphException("Invalid syntax");
