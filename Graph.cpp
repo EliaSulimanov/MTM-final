@@ -170,3 +170,18 @@ gcalc::Graph gcalc::complement(const Graph& grap)
 	return result;
 }
 
+void gcalc::print(const Graph& grap)
+{
+	for (auto vertex : grap.vertex_set)
+	{
+		std::cout << vertex << std::endl;
+	}
+
+	std::cout << "$" << std::endl;
+	
+	for (auto edge : grap.edge_set)
+	{
+		std::cout << edge[0] + " " + edge[1] << std::endl;
+	}
+}
+

@@ -24,12 +24,14 @@ namespace gcalc
 		friend Graph diff(const Graph& lhg, const Graph& rhg);
 		friend Graph cross(const Graph& lhg, const Graph& rhg);
 		friend Graph complement(const Graph& grap);
+		friend void print(const Graph& grap);
 	};
 	Graph unite(const Graph& lhg, const Graph& rhg);
 	Graph intersect(const Graph& lhg, const Graph& rhg);
 	Graph diff(const Graph& lhg, const Graph& rhg);
 	Graph cross(const Graph& lhg, const Graph& rhg);
 	Graph complement(const Graph& grap);
+	void print(const Graph& grap);
 }
 #endif
 
