@@ -15,6 +15,28 @@ void gcalcLoop(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map)
 		std::cout << "Gcalc> ";
 		std::getline(std::cin, command);
 		std::vector<std::string> split_command = gcalc::GraphHelper::splitCommand(command);
+
+		if (split_command.size() == 1)
+		{
+			if (split_command[0].compare("quit") == 0)
+			{
+				break;
+			}
+			else if (split_command[0].compare("reset") == 0)
+			{
+				symbol_map.clear();
+			}
+			else if (split_command[0].compare("who") == 0) 
+			{
+				for (auto grap : symbol_map)
+				{
+					if (grap.second != nullptr)
+					{
+						std::cout << grap.first << std::endl;
+					}
+				}
+			}
+		}
 	}
 }
 
