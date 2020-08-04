@@ -72,7 +72,7 @@ void eval(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, std:
 	{
 		if (gcalc::GraphHelper::checkNoDuplicateCommands(command) && gcalc::GraphHelper::checkSpecialChars(command)) // TODO: see if this is a good check
 		{
-			if (command.size() == 4) //easy command, no graph evaluation
+			/*if (command.size() == 4) //easy command, no graph evaluation
 			{
 				if (command[0].compare("print") == 0)
 				{
@@ -116,8 +116,14 @@ void eval(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, std:
 			else // complex command
 			{
 				// TODO
-			}
+			}*/
+
+
 		}
+	}
+	catch (gcalc::FatalGraphException& e)
+	{
+		// TODO
 	}
 	catch (std::exception& e)
 	{
