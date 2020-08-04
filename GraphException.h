@@ -1,4 +1,4 @@
-#ifndef GRAPH_EXCEPTION_H
+﻿#ifndef GRAPH_EXCEPTION_H
 #define GRAPH_EXCEPTION_H
 
 #include <iostream>
