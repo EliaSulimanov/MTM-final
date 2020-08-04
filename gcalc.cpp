@@ -45,11 +45,11 @@ void gcalcLoop(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map)
 					}
 				}
 			}
-			else
+			else // it is a one block command (no white spaces)
 			{
 				try 
 				{
-					executeCommand(symbol_map, split_command);
+					executeCommand(symbol_map, split_command); // TODO: continue
 				}
 				catch (gcalc::FatalGraphException())
 				{
@@ -80,12 +80,31 @@ void deleteGraph(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_ma
 
 void executeCommand(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, std::vector<std::string> split_command)
 {
-	if (split_command[0].find("print") != std::string::npos)
+	if (split_command[0].rfind("print(", 0) != std::string::npos)
 	{
-		if (gcalc::GraphHelper::checkCommand(split_command))
+		if (split_command[0][split_command[0].size() - 1] != ')') 
+		{
+			throw gcalc::GraphException("Invalid syntax");
+		}
+		else
 		{
 
 		}
+	}
+	else if (split_command[0].rfind("delete(", 0) != std::string::npos)
+	{
+		if (split_command[0][split_command[0].size() - 1] != ')')
+		{
+			throw gcalc::GraphException("Invalid syntax");
+		}
+		else
+		{
+
+		}
+	}
+	else // Must be assignment
+	{
+
 	}
 }
 

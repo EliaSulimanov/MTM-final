@@ -6,7 +6,8 @@
 const std::set<std::string> invalid_names = {"Graph", "operator", "insertVertex",
 	"insertEdge", "unite", "GraphException", "what", "FatalGraphException", "vertexNameCheck",
 	"splitCommand", "gcalcLoop", "main", "intersect", "diff", "cross", "complement", "quit",
-	"reset", "who", "print", "delete", "deleteGraph"};
+	"reset", "who", "print", "delete", "deleteGraph", "executeCommand", "checkParenthesesBalance",
+	"checkGraphParentheses", "checkCommand"};
 
 bool gcalc::GraphHelper::vertexNameCheck(std::string vertex_name) {
 	if (vertex_name.empty()) {
@@ -63,6 +64,11 @@ bool gcalc::GraphHelper::checkCommand(std::vector<std::string> split_command)
 	std::string normal_command;
 	normal_command.append(split_command.begin(), split_command.end());
 
+	if (!isalpha(normal_command[0])) // Must start with alphabet char.
+	{
+		throw gcalc::GraphException("Invalid syntax");
+	}
+
 	if (std::count(normal_command.begin(), normal_command.end(), '=') > 1)
 	{
 		throw gcalc::GraphException("Invalid syntax");
@@ -70,7 +76,7 @@ bool gcalc::GraphHelper::checkCommand(std::vector<std::string> split_command)
 
 	if (checkParenthesesBalance(normal_command))
 	{
-		//TODO
+		return true; // TODO: check if this is enouth
 	}
 
 	return true;
