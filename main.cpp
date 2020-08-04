@@ -258,16 +258,21 @@ void graphTest() {
 	std::cout << "Done!";
 }
 
+// TODO: delete.
 void crossTest()
 {
 	try
 	{
 		gcalc::Graph G1;
-		G1.insertVertex("a");
-		G1.insertVertex("b");
+		G1.insertVertex("u1");
+		G1.insertVertex("v1");
+		G1.insertEdge("u1", "v1");
 		gcalc::Graph G2;
-		G2.insertVertex("C");
-		G2.insertVertex("D");
+		G2.insertVertex("u2");
+		G2.insertVertex("v2");
+		G2.insertVertex("w2");
+		G2.insertEdge("u2", "v2");
+		G2.insertEdge("v2", "w2");
 
 		gcalc::Graph G3 = gcalc::cross(G1, G2);
 	}
@@ -277,10 +282,53 @@ void crossTest()
 	}
 }
 
-int main() {
-	//map graphs name and pointer to the graph
-	/*std::map<std::string, std::shared_ptr<gcalc::Graph>> symbol_map;
-	gcalcLoop(symbol_map);*/
+// TODO: delete.
+void complementTest()
+{
+	try 
+	{
+		gcalc::Graph G1;
+		G1.insertVertex("u1");
+		G1.insertVertex("v1");
+		G1.insertEdge("u1", "v1");
+		gcalc::Graph G2 = gcalc::complement(G1);
+		std::cout << "Done!" << std::endl;
+	}
+	catch (std::exception& e)
+	{
+		std::cout << "Error: " << e.what() << std::endl;
+	}
 
-	crossTest();
+	try
+	{
+		gcalc::Graph G1;
+		G1.insertVertex("u2");
+		G1.insertVertex("v2");
+		G1.insertVertex("w2");
+		G1.insertEdge("u2", "v2");
+		G1.insertEdge("v2", "w2");
+		gcalc::Graph G2 = gcalc::complement(G1);
+		std::cout << "Done!" << std::endl;
+	}
+	catch (std::exception& e)
+	{
+		std::cout << "Error: " << e.what() << std::endl;
+	}
+}
+
+int main(int argc, char* argv[]) {
+	//map graphs name and pointer to the graph
+	std::map<std::string, std::shared_ptr<gcalc::Graph>> symbol_map;
+	if (argc == 1)
+	{
+		gcalcLoop(symbol_map);
+	}
+	else if (argc == 3) 
+	{
+		// TODO: check arguments and so on...
+	}
+	else
+	{
+		// TODO: invalid number of args, print error and quit.
+	}
 }
