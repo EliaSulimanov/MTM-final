@@ -8,7 +8,7 @@ const std::set<std::string> invalid_names = {"Graph", "operator", "insertVertex"
 	"insertEdge", "unite", "GraphException", "what", "FatalGraphException", "vertexNameCheck",
 	"splitCommand", "gcalcLoop", "main", "intersect", "diff", "cross", "complement", "quit",
 	"reset", "who", "print", "delete", "deleteGraph", "executeCommand", "checkParenthesesBalance",
-	"checkGraphParentheses", "checkCommand"}; //TODO
+	"checkGraphParentheses", "checkCommand"}; //TODO : add all functions names at the end
 
 const std::set<std::string> special_chars = {"=", "{", "}", ",", "|", "<", ">", "(", ")", "!", "+", "^", "-", "*"};
 
@@ -299,13 +299,23 @@ bool gcalc::GraphHelper::checkGraphSyntax(std::vector<std::string> command)
 	return true;
 }
 
-std::shared_ptr<gcalc::Graph> gcalc::GraphHelper::commandToGraph(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, std::vector<std::string> command)
+std::shared_ptr<gcalc::Graph> gcalc::GraphHelper::commandToGraph(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, std::vector<std::string> split_command)
 {
 	gcalc::Graph result_graph;
+
+	std::vector<std::string> command = split_command;
 
 	if (command.size() == 0)
 	{
 		throw gcalc::GraphException("Invalid syntax, empty command is not allowed");
+	}
+
+	bool complement_graph = false;
+	if (command[0].compare("!") == 0)
+	{
+		complement_graph = true;
+		command.erase(command.begin());
+		return std::shared_ptr<gcalc::Graph>(new gcalc::Graph(gcalc::complement(*(commandToGraph(symbol_map, command)))));
 	}
 
 	if (command.size() == 1) // It is a variable name
@@ -315,7 +325,7 @@ std::shared_ptr<gcalc::Graph> gcalc::GraphHelper::commandToGraph(std::map<std::s
 			throw gcalc::GraphException("Undefined variable");
 		}
 		else
-		{
+		{	
 			return symbol_map.at(command[0]);
 		}
 	}
@@ -380,7 +390,7 @@ std::shared_ptr<gcalc::Graph> gcalc::GraphHelper::commandToGraph(std::map<std::s
 			i++;
 		}
 	}
-	
+
 	return std::shared_ptr<gcalc::Graph>(new Graph(result_graph));
 }
 

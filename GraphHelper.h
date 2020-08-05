@@ -29,7 +29,7 @@ namespace gcalc {
 		static std::vector<std::string> splitCommand(const std::string command);
 		static bool checkNoDuplicateCommands(std::vector<std::string> command);
 		static bool checkGraphSyntax(std::vector<std::string> command);
-		static std::shared_ptr<gcalc::Graph> commandToGraph(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, std::vector<std::string> command);
+		static std::shared_ptr<gcalc::Graph> commandToGraph(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, std::vector<std::string> split_command);
 		static bool checkGraphName(std::string graph_name);
 		static std::shared_ptr<gcalc::Graph> evaluateBinaryOperation(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, std::vector<std::string> left_graph, std::vector<std::string> right_graph, std::string oper);
 		static std::shared_ptr<gcalc::Graph> evaluateBinaryOperation(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, std::shared_ptr<gcalc::Graph> left_graph, std::shared_ptr<gcalc::Graph> right_graph, std::string oper);
