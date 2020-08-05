@@ -134,7 +134,8 @@ void eval(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, std:
 							auto graph_start = command.begin() + 2;
 							std::vector<std::string> temp_vector(graph_start, command.end());
 
-							symbol_map.insert(std::pair<std::string, std::shared_ptr<gcalc::Graph>>(command[0], gcalc::GraphHelper::commandToGraph(temp_vector)));
+							//symbol_map.insert(std::pair<std::string, std::shared_ptr<gcalc::Graph>>(command[0], gcalc::GraphHelper::commandToGraph(symbol_map, temp_vector)));
+							symbol_map.insert(std::pair<std::string, std::shared_ptr<gcalc::Graph>>(command[0], gcalc::GraphHelper::commandOperation(symbol_map, temp_vector)));
 						}
 					}
 				}
