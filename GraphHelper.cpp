@@ -310,10 +310,8 @@ std::shared_ptr<gcalc::Graph> gcalc::GraphHelper::commandToGraph(std::map<std::s
 		throw gcalc::GraphException("Invalid syntax, empty command is not allowed");
 	}
 
-	bool complement_graph = false;
 	if (command[0].compare("!") == 0)
 	{
-		complement_graph = true;
 		command.erase(command.begin());
 		return std::shared_ptr<gcalc::Graph>(new gcalc::Graph(gcalc::complement(*(commandToGraph(symbol_map, command)))));
 	}
