@@ -59,7 +59,7 @@ size_t gcalc::GraphHelper::findNextTokenPos(std::string command) {
 	for (; i < command.size(); i++)
 	{
 		ch = command[i];
-		if (special_chars.find(std::to_string(ch)) != special_chars.end())
+		if (special_chars.find(std::string(1, ch)) != special_chars.end()) // TODO: add catch for bad_alloc and throw fatal exception
 		{
 			return i;
 		}
@@ -156,17 +156,9 @@ bool gcalc::GraphHelper::checkNoDuplicateCommands(std::vector<std::string> comma
 		throw gcalc::GraphException("Invalid syntax, only one command per line allowed");
 	}
 
-	if (num_of_print > 1 || num_of_delete > 1 || num_of_equal > 1)
+	if (num_of_print > 0 || num_of_delete > 0 || num_of_equal > 0)
 	{
 		throw gcalc::GraphException("Invalid syntax, only one command per line allowed");
-	}
-
-	if ((num_of_print == 1 && (num_of_delete > 0 || num_of_equal > 0)) ||
-		(num_of_delete == 1 && (num_of_print > 0 || num_of_equal > 0)) ||
-		(num_of_equal == 1 && (num_of_delete > 0 || num_of_print > 0)))
-	{
-		throw gcalc::GraphException("Invalid syntax, only one command per line allowed");
-
 	}
 
 	return true;
@@ -195,7 +187,7 @@ bool gcalc::GraphHelper::checkSpecialChars(std::vector<std::string> command)
 		{
 			if (word.compare("!") == 0)
 			{
-				if(word_iter) // TODO: code the rules
+				 // TODO: code the rules
 			}
 			if (last_word_was_sign)
 			{
@@ -212,6 +204,88 @@ bool gcalc::GraphHelper::checkSpecialChars(std::vector<std::string> command)
 		}
 	}
 
+	return true;
+}
+
+std::shared_ptr<gcalc::Graph> gcalc::GraphHelper::commandToGraph(std::vector<std::string> command)
+{
+	gcalc::Graph result_graph;
+
+	if (command.size() < 2) // Just for safety, check it is the right format again
+	{
+		throw gcalc::GraphException("Invalid syntax");
+	}
+	if (command[0].compare("{") != 0 || command[command.size() - 1].compare("}") != 0)
+	{
+		throw gcalc::GraphException("Invalid syntax");
+	}
+
+	int i = 1;
+	bool in_the_egde_block = false;
+	bool inside_edge = false;
+	while (command[i].compare("}") != 0)
+	{
+		if (command[i].compare("|") == 0)
+		{
+			in_the_egde_block = true;
+			continue;
+		}
+		if (in_the_egde_block)
+		{
+			if (!inside_edge)
+			{
+				if (command[i].compare(",") == 0)
+				{
+					if (!(command[i - 1].compare(">") == 0 && command[i + 1].compare("<") == 0))
+					{
+						throw gcalc::GraphException("Invalid syntax");
+					}
+				}
+				if (command[i].compare("<") == 0)
+				{
+					inside_edge = true;
+				}
+			}
+			else
+			{
+				if (command[i + 1].compare(",") != 0 || command[i + 3].compare(">") != 0)
+				{
+					throw gcalc::GraphException("Invalid syntax");
+				}
+				else
+				{
+					result_graph.insertEdge(command[i], command[i + 2]);
+					i += 3; // jump to >
+					inside_edge = false;
+				}
+			}
+		}
+		else
+		{
+			result_graph.insertVertex(command[i]);
+		}
+	}
+	
+	return std::shared_ptr<gcalc::Graph>(new Graph(result_graph));
+}
+
+bool gcalc::GraphHelper::checkGraphName(std::string graph_name)
+{
+	if (graph_name.empty())
+	{
+		throw gcalc::GraphException("Invalid graph name");
+	}
+	if (!isalpha(graph_name[0]))
+	{
+		throw gcalc::GraphException("Invalid graph name");
+	}
+	for (auto ch : graph_name)
+	{
+		if (!isalnum(ch))
+		{
+			throw gcalc::GraphException("Invalid graph name");
+		}
+	}
 	return true;
 }
 

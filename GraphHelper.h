@@ -7,6 +7,8 @@
 #include <vector>
 #include <sstream>
 #include <iterator>
+#include <memory>
+#include <map>
 
 #include "Graph.h"
 #include "GraphException.h"
@@ -25,6 +27,8 @@ namespace gcalc {
 		static std::vector<std::string> splitCommand(const std::string command);
 		static bool checkNoDuplicateCommands(std::vector<std::string> command);
 		static bool checkSpecialChars(std::vector<std::string> command);
+		static std::shared_ptr<gcalc::Graph> commandToGraph(std::vector<std::string> command);
+		static bool checkGraphName(std::string graph_name);
 	};
 }
 
