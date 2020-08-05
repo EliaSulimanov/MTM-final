@@ -81,8 +81,8 @@ void gcalc::GraphHelper::clearChar(std::string& command, char ch)
 {
 	size_t left = command.find_first_not_of(ch);
 	size_t right = command.find_last_not_of(ch);
-	command.erase(0, left);
 	command.erase(right + 1);
+	command.erase(0, left);
 }
 
 std::vector<std::string> gcalc::GraphHelper::splitCommand(const std::string command)
@@ -170,51 +170,6 @@ bool gcalc::GraphHelper::checkNoDuplicateCommands(std::vector<std::string> comma
 	}
 
 	return true;
-	/*int num_of_print = 0;
-	int num_of_delete = 0;
-	int num_of_equal = 0;
-	int num_of_who = 0;
-	int num_of_quit = 0;
-	int num_of_reset = 0;
-	for (auto word : command)
-	{
-		if (word.compare("print") == 0)
-		{
-			num_of_print++;
-		}
-		else if (word.compare("delete") == 0)
-		{
-			num_of_delete++;
-		}
-		else if (word.compare("=") == 0)
-		{
-			num_of_equal++;
-		}
-		else if (word.compare("who") == 0)
-		{
-			num_of_who++;
-		}
-		else if (word.compare("quit") == 0)
-		{
-			num_of_quit++;
-		}
-		else if (word.compare("reset") == 0)
-		{
-			num_of_reset++;
-		}
-	}
-
-	if (num_of_who > 0 || num_of_quit > 0 || num_of_reset > 0)
-	{
-		throw gcalc::GraphException("Invalid syntax, only one command per line allowed");
-	}
-
-	if (num_of_print > 0 || num_of_delete > 0 || num_of_equal > 0)
-	{
-		throw gcalc::GraphException("Invalid syntax, only one command per line allowed");
-	}
-
-	return true;*/
 }
 
 bool gcalc::GraphHelper::checkGraphSyntax(std::vector<std::string> command)
@@ -330,14 +285,27 @@ bool gcalc::GraphHelper::checkGraphSyntax(std::vector<std::string> command)
 	return true;
 }
 
-std::shared_ptr<gcalc::Graph> gcalc::GraphHelper::commandToGraph(std::vector<std::string> command)
+std::shared_ptr<gcalc::Graph> gcalc::GraphHelper::commandToGraph(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, std::vector<std::string> command)
 {
 	gcalc::Graph result_graph;
 
-	if (command.size() < 2) // Just for safety, check it is the right format again
+	if (command.size() == 0)
 	{
-		throw gcalc::GraphException("Invalid syntax");
+		throw gcalc::GraphException("Invalid syntax, empty command is not allowed");
 	}
+
+	if (command.size() == 1) // It is a variable name
+	{
+		if (symbol_map.find(command[0]) == symbol_map.end())
+		{
+			throw gcalc::GraphException("Undefined variable");
+		}
+		else
+		{
+			return symbol_map.at(command[0]);
+		}
+	}
+
 	if (command[0].compare("{") != 0 || command[command.size() - 1].compare("}") != 0)
 	{
 		throw gcalc::GraphException("Invalid syntax");
@@ -419,7 +387,135 @@ bool gcalc::GraphHelper::checkGraphName(std::string graph_name)
 			throw gcalc::GraphException("Invalid graph name");
 		}
 	}
+
+	// TODO: add check if it is function name
+
 	return true;
+}
+
+std::shared_ptr<gcalc::Graph> gcalc::GraphHelper::evaluateBinaryOperation(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, std::vector<std::string> left_graph, std::vector<std::string> right_graph, std::string oper)
+{
+	if (!isBinaryOper(oper))
+	{
+		throw gcalc::GraphException("Invalid syntax, Unknown operation");
+	}
+
+	std::string l_graph, r_graph;
+	for (auto word : left_graph)
+	{
+		l_graph.append(word);
+	}
+	
+	for (auto word : right_graph)
+	{
+		r_graph.append(word);
+	}
+	
+	if (l_graph.empty() || r_graph.empty())
+	{
+		throw gcalc::GraphException("Invalid syntax, binary operation must have 2 args");
+	}
+	
+	if (checkGraphParentheses(l_graph) && checkGraphParentheses(r_graph))
+	{
+		gcalc::Graph l_g = (*(commandToGraph(symbol_map, left_graph)));
+		gcalc::Graph r_g = (*(commandToGraph(symbol_map, right_graph)));
+
+		return evaluateBinaryOperation(symbol_map, std::shared_ptr<gcalc::Graph>(new Graph(l_g)), std::shared_ptr<gcalc::Graph>(new Graph(r_g)), oper);
+	}
+	else
+	{
+		throw gcalc::GraphException("Invalid graph syntax");
+	}
+}
+
+std::shared_ptr<gcalc::Graph> gcalc::GraphHelper::evaluateBinaryOperation(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, std::shared_ptr<gcalc::Graph> left_graph, std::shared_ptr<gcalc::Graph> right_graph, std::string oper)
+{
+	gcalc::Graph result_graph;
+
+	switch (oper[0])
+	{
+	case '+':
+		result_graph = gcalc::unite(*left_graph, *right_graph);
+		break;
+	case '-':
+		result_graph = gcalc::diff(*left_graph, *right_graph);
+		break;
+	case '^':
+		result_graph = gcalc::intersect(*left_graph, *right_graph);
+		break;
+	case '*':
+		result_graph = gcalc::cross(*left_graph, *right_graph);
+		break;
+	default:
+		throw gcalc::FatalGraphException("Fatal error while evaluating operation");
+		break;
+	}
+
+	return std::shared_ptr<gcalc::Graph>(new Graph(result_graph));
+}
+
+std::shared_ptr<gcalc::Graph> gcalc::GraphHelper::evaluateBinaryOperation(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, std::vector<std::string> left_graph, std::shared_ptr<gcalc::Graph> right_graph, std::string oper)
+{
+	if (!isBinaryOper(oper))
+	{
+		throw gcalc::GraphException("Invalid syntax, Unknown operation");
+	}
+
+	std::string l_graph;
+	for (auto word : left_graph)
+	{
+		l_graph.append(word);
+	}
+	
+	if (l_graph.empty())
+	{
+		throw gcalc::GraphException("Invalid syntax, binary operation must have 2 args");
+	}
+
+	if (checkGraphParentheses(l_graph))
+	{
+		gcalc::Graph l_g = (*(commandToGraph(symbol_map, left_graph)));
+
+		return evaluateBinaryOperation(symbol_map, std::shared_ptr<gcalc::Graph>(new Graph(l_g)), right_graph, oper);
+	}
+	else
+	{
+		throw gcalc::GraphException("Invalid graph syntax");
+	}
+}
+
+bool gcalc::GraphHelper::isBinaryOper(std::string oper)
+{
+	if (oper.size() != 1)
+		return false;
+	if (oper.compare("+") == 0 || oper.compare("-") == 0 || oper.compare("^") == 0 || oper.compare("*") == 0)
+	{
+		return true;
+	}
+	return false;
+}
+
+std::shared_ptr<gcalc::Graph> gcalc::GraphHelper::commandOperation(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, std::vector<std::string> command)
+{
+	if (command.empty())
+	{
+		throw gcalc::GraphException("Empty command");
+	}
+	
+	auto oper_pos = std::find_if(command.begin(), command.end(), isBinaryOper);
+	if (oper_pos != command.end())
+	{
+		std::vector<std::string> left_v(command.begin(), oper_pos);
+		std::string op = (*oper_pos);
+		std::vector<std::string> right_v(oper_pos + 1, command.end());
+
+		return gcalc::GraphHelper::evaluateBinaryOperation(symbol_map, left_v, commandOperation(symbol_map, right_v), op); //TODO: check if slice went well
+	}
+	else
+	{
+		return gcalc::GraphHelper::commandToGraph(symbol_map, command);
+	}
 }
 
 bool gcalc::GraphHelper::checkGraphParentheses(std::string normal_command)
