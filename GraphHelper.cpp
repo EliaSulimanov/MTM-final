@@ -8,7 +8,7 @@ const std::set<std::string> invalid_names = {"Graph", "operator", "insertVertex"
 	"insertEdge", "unite", "GraphException", "what", "FatalGraphException", "vertexNameCheck",
 	"splitCommand", "gcalcLoop", "main", "intersect", "diff", "cross", "complement", "quit",
 	"reset", "who", "print", "delete", "deleteGraph", "executeCommand", "checkParenthesesBalance",
-	"checkGraphParentheses", "checkCommand"};
+	"checkGraphParentheses", "checkCommand"}; //TODO
 
 const std::set<std::string> special_chars = {"=", "{", "}", ",", "|", "<", ">", "(", ")", "!", "+", "^", "-", "*"};
 
@@ -206,6 +206,10 @@ bool gcalc::GraphHelper::checkGraphSyntax(std::vector<std::string> command)
 		{
 			if ((*vertex_side_iter).compare(",") != 0) // Should be a sign but it is not, or it is not allowed sign
 			{
+				if ((*vertex_side_iter).compare("}") == 0 && vertex_side_iter + 1 == command.end()) // new check, for one vertex
+				{
+					return true;
+				}
 				throw gcalc::GraphException("Invalid graph syntax");
 			}
 			alt_sign = false;
@@ -223,6 +227,7 @@ bool gcalc::GraphHelper::checkGraphSyntax(std::vector<std::string> command)
 	if (pipe_pos != command.end())
 	{
 		int sign_type = 0; // 0='<', 1=',' ,2='>' 
+		bool inside_edge = false;
 		auto edge_side_iter = pipe_pos + 1;
 		while (edge_side_iter != command.end())
 		{
@@ -247,24 +252,33 @@ bool gcalc::GraphHelper::checkGraphSyntax(std::vector<std::string> command)
 					{
 						throw gcalc::GraphException("Invalid graph syntax");
 					}
-					sign_type = (sign_type + 1) % 3;
+					sign_type = 1;
 					alt_sign = false;
+					inside_edge = true;
 					break;
 				case 1:
 					if ((*edge_side_iter).compare(",") != 0) // Should be a sign but it is not, or it is not allowed sign
 					{
 						throw gcalc::GraphException("Invalid graph syntax");
 					}
-					sign_type = (sign_type + 1) % 3;
-					alt_sign = false;
+					if (inside_edge)
+					{
+						alt_sign = false;
+						sign_type = 2;
+					}
+					else
+					{
+						sign_type = 0;
+					}
 					break;
 				case 2:
 					if ((*edge_side_iter).compare(">") != 0) // Should be a sign but it is not, or it is not allowed sign
 					{
 						throw gcalc::GraphException("Invalid graph syntax");
 					}
-					sign_type = (sign_type + 1) % 3;
-					alt_sign = false;
+					sign_type = 1;
+					alt_sign = true;
+					inside_edge = false;
 					break;
 				default:
 					throw gcalc::FatalGraphException("Fatal error while checking graph syntax");
