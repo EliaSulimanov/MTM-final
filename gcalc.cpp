@@ -124,17 +124,18 @@ void eval(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, std:
 					}
 					else
 					{
-						if (symbol_map.find(command[0]) != symbol_map.end())
+						auto graph_start = command.begin() + 2;
+						std::vector<std::string> temp_vector(graph_start, command.end());
+						// TODO: temp check. need to add a functionality for more than one graph
+
+						auto symbol_map_iter = symbol_map.find(command[0]);
+						if (symbol_map_iter != symbol_map.end())
 						{
-							throw gcalc::GraphException("Variable already exist");
+							std::shared_ptr<gcalc::Graph> temp_graph = gcalc::GraphHelper::commandOperation(symbol_map, temp_vector);
+							symbol_map_iter->second = temp_graph;
 						}
 						else
 						{
-							// TODO: temp check. need to add a functionality for more than one graph
-							auto graph_start = command.begin() + 2;
-							std::vector<std::string> temp_vector(graph_start, command.end());
-
-							//symbol_map.insert(std::pair<std::string, std::shared_ptr<gcalc::Graph>>(command[0], gcalc::GraphHelper::commandToGraph(symbol_map, temp_vector)));
 							symbol_map.insert(std::pair<std::string, std::shared_ptr<gcalc::Graph>>(command[0], gcalc::GraphHelper::commandOperation(symbol_map, temp_vector)));
 						}
 					}
