@@ -102,7 +102,10 @@ void eval(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, std:
 				}
 				else // The arg is complex graph def
 				{
-					// TODO
+					// TODO check on complex graphs
+					auto graph_start = command.begin() + 2;
+					std::vector<std::string> temp_vector(graph_start, command.end());
+					gcalc::print(*(gcalc::GraphHelper::commandOperation(symbol_map, temp_vector)));
 				}
 				
 			}
