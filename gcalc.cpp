@@ -2,6 +2,7 @@
 #include "Graph.h"
 
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <string>
 #include <map>
@@ -9,6 +10,7 @@
 #include <algorithm>
 
 void gcalcLoop(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map);
+void gcalcLoop(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, char* argv[]);
 void deleteGraph(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, std::string GraphName);
 void eval(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, std::vector<std::string> command);
 
@@ -21,6 +23,95 @@ void gcalcLoop(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map)
 
 			std::cout << "Gcalc> ";
 			std::getline(std::cin, command);
+			std::vector<std::string> split_command = gcalc::GraphHelper::splitCommand(command);
+
+ 			if (split_command.size() == 0)
+ 			{
+				if (std::cin.eof())
+				{
+					break;
+				}
+ 				continue;
+ 			}
+			else if (split_command.size() == 1)
+			{
+				if (split_command[0].compare("quit") == 0)
+				{
+					break;
+				}
+				else if (split_command[0].compare("reset") == 0)
+				{
+					symbol_map.clear();
+				}
+				else if (split_command[0].compare("who") == 0)
+				{
+					for (auto grap : symbol_map)
+					{
+						if (grap.second != nullptr)
+						{
+							std::cout << grap.first << std::endl;
+						}
+					}
+				}
+				else
+				{
+					std::cout << "Error: Unrecognized command" << std::endl;
+				}
+			}
+			else {
+				eval(symbol_map, split_command);
+			}
+		}
+		catch (gcalc::FatalGraphException& e)
+		{
+			std::cerr << "Fatal Error: " << e.what() << std::endl;
+			return;
+		}
+		catch (std::exception& e)
+		{
+			std::cout << "Error: " << e.what() << std::endl;
+		}
+	}
+}
+
+void gcalcLoop(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, char* argv[]) {
+	std::ifstream ifs(argv[0]);
+	if (!ifs.is_open())
+	{
+		std::cerr << "Fatal error: Error opening input file" << std::endl;
+		return;
+	}
+	try
+	{
+		std::cin.rdbuf(ifs.rdbuf());
+	}
+	catch (const std::exception&)
+	{
+		std::cerr << "Fatal error: Error redirecting input" << std::endl;
+		return;
+	}
+
+	std::ofstream ofs(argv[1]);
+	if (!ofs.is_open())
+	{
+		std::cerr << "Fatal error: Error opening output file" << std::endl;
+		return;
+	}
+	try
+	{
+		std::cout.rdbuf(ofs.rdbuf());
+	}
+	catch (const std::exception&)
+	{
+		std::cerr << "Fatal error: Error redirecting output" << std::endl;
+		return;
+	}
+
+	std::string command;
+	while (std::getline(std::cin, command) && command.compare("quit") != 0)
+	{
+		try
+		{
 			std::vector<std::string> split_command = gcalc::GraphHelper::splitCommand(command);
 
 			if (split_command.size() == 0)
@@ -58,7 +149,8 @@ void gcalcLoop(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map)
 		}
 		catch (gcalc::FatalGraphException& e)
 		{
-			// TODO
+			std::cerr << "Fatal Error: " << e.what() << std::endl;
+			return;
 		}
 		catch (std::exception& e)
 		{
@@ -157,7 +249,6 @@ void eval(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, std:
 }
 
 int main(int argc, char* argv[]) {
-	//map graphs name and pointer to the graph
 	std::map<std::string, std::shared_ptr<gcalc::Graph>> symbol_map;
 	if (argc == 1)
 	{
@@ -165,10 +256,11 @@ int main(int argc, char* argv[]) {
 	}
 	else if (argc == 3) 
 	{
-		// TODO: check arguments and so on...
+		gcalcLoop(symbol_map, argv);
 	}
 	else
 	{
-		// TODO: invalid number of args, print error and quit.
+		std::cerr << "Fatal Error: Invalid number of arguments" << std::endl;
+		return 0;
 	}
 }
