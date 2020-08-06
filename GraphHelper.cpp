@@ -578,11 +578,9 @@ std::shared_ptr<gcalc::Graph> gcalc::GraphHelper::commandOperation(std::map<std:
 		return gcalc::GraphHelper::commandOperation(symbol_map, command, real_command);
 	}
 
-	// TODO: add check for g= {}{}
-
-	std::stack<std::string> brackets_stack = {};
+	std::stack<std::string> brackets_stack;
 	
-	std::stack<std::string> crully_stack = {};
+	std::stack<std::string> crully_stack;
 
 	for (auto iter = command.rbegin(); iter != command.rend(); iter++)
 	{
@@ -658,13 +656,16 @@ std::shared_ptr<gcalc::Graph> gcalc::GraphHelper::loadGraph(std::map<std::string
 			{
 				size_t num_of_vertexs = 0;
 				fd.read((char*)&num_of_vertexs, sizeof(int));
+
 				size_t num_of_edges = 0;
 				fd.read((char*)&num_of_edges, sizeof(int));
 
 				for (size_t i = 0; i < num_of_vertexs; i++)
 				{
-					size_t vertex_name_len;
+					size_t vertex_name_len = 0;
+
 					fd.read((char *)&vertex_name_len, sizeof(int));
+
 					char* temp = new char[vertex_name_len + 1];
 					
 					for (size_t i = 0; i < vertex_name_len; i++)
@@ -679,7 +680,7 @@ std::shared_ptr<gcalc::Graph> gcalc::GraphHelper::loadGraph(std::map<std::string
 
 				for (size_t i = 0; i < num_of_edges; i++)
 				{
-					size_t src_vertex_name_len;
+					size_t src_vertex_name_len = 0;
 					fd.read((char*)&src_vertex_name_len, sizeof(int));
 					char* temp = new char[src_vertex_name_len + 1];
 					for (size_t i = 0; i < src_vertex_name_len; i++)
@@ -688,7 +689,7 @@ std::shared_ptr<gcalc::Graph> gcalc::GraphHelper::loadGraph(std::map<std::string
 					}
 					temp[src_vertex_name_len] = '\0';
 
-					size_t dest_vertex_name_len;
+					size_t dest_vertex_name_len = 0;
 					fd.read((char*)&dest_vertex_name_len, sizeof(int));
 					char* temp_b = new char[dest_vertex_name_len + 1];
 					for (size_t i = 0; i < dest_vertex_name_len; i++)
@@ -780,7 +781,7 @@ bool gcalc::GraphHelper::checkParenthesesBalance(std::string normal_command)
 {
 	if (checkGraphParentheses(normal_command))
 	{
-		std::stack<char> pre_stack = {};
+		std::stack<char> pre_stack;
 
 		for (auto ch : normal_command)
 		{
