@@ -19,6 +19,7 @@ namespace gcalc
 		Graph& operator=(const Graph& rhg);
 		void insertVertex(std::string vertex);
 		void insertEdge(std::string src, std::string dest);
+		std::string flatGraph();
 		friend Graph unite(const Graph& lhg, const Graph& rhg);
 		friend Graph intersect(const Graph& lhg, const Graph& rhg);
 		friend Graph diff(const Graph& lhg, const Graph& rhg);
