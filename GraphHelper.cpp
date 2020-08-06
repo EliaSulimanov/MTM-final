@@ -644,8 +644,81 @@ std::shared_ptr<gcalc::Graph> gcalc::GraphHelper::commandOperation(std::map<std:
 std::shared_ptr<gcalc::Graph> gcalc::GraphHelper::loadGraph(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, std::vector<std::string> command, std::string real_command)
 {
 	auto file_path = command[2];
+
+	if (command[1].compare("(") != 0)
+	{
+		throw gcalc::GraphException("Invalid syntax, missing starting parentheses on load command");
+	}
+	if (command[1].compare("(") == 0 && command[command.size() - 1].compare(")") != 0)
+	{
+		throw gcalc::GraphException("Invalid syntax, missing ending parentheses on load command");
+	}
+	std::vector<std::string> name_check = { file_path };
 	gcalc::Graph temp_graph;
-	return std::shared_ptr<gcalc::Graph>();
+	if (checkFileName(name_check))
+	{
+		try
+		{
+			std::ifstream fd(file_path, std::ios_base::binary);
+			if (fd.is_open())
+			{
+				size_t num_of_vertexs = 0;
+				fd.read((char*)&num_of_vertexs, sizeof(int));
+				size_t num_of_edges = 0;
+				fd.read((char*)&num_of_edges, sizeof(int));
+
+				for (size_t i = 0; i < num_of_vertexs; i++)
+				{
+					size_t vertex_name_len;
+					fd.read((char *)&vertex_name_len, sizeof(int));
+					char* temp = new char[vertex_name_len + 1];
+					fd.read(temp, vertex_name_len);
+					temp[vertex_name_len] = '\0';
+					std::string vertex_name(temp);
+					delete[] temp; // Check if memory leaks
+					temp_graph.insertVertex(vertex_name);
+				}
+
+				for (size_t i = 0; i < num_of_edges; i++)
+				{
+					size_t src_vertex_name_len;
+					fd.read((char*)&src_vertex_name_len, sizeof(int));
+					char* temp = new char[src_vertex_name_len + 1];
+					fd.read(temp, src_vertex_name_len);
+					temp[src_vertex_name_len] = '\0';
+
+					size_t dest_vertex_name_len;
+					fd.read((char*)&dest_vertex_name_len, sizeof(int));
+					char* temp_b = new char[dest_vertex_name_len + 1];
+					fd.read(temp_b, dest_vertex_name_len);
+					temp_b[dest_vertex_name_len] = '\0';
+
+					std::string src_vertex_name(temp);
+					std::string dest_vertex_name(temp_b);
+
+					delete[] temp; // TODO: check if memory leaks
+					delete[] temp_b; // TODO: check if memory leaks
+					
+					temp_graph.insertEdge(src_vertex_name, dest_vertex_name);
+				}
+				fd.close();
+			}
+			else
+			{
+				throw gcalc::GraphException("Unable to open the file: " + file_path);
+			}
+		}
+		catch (std::bad_alloc& e)
+		{
+			throw gcalc::FatalGraphException("Fatal error- out of memory");
+		}
+		catch (const std::exception&)
+		{
+			throw gcalc::GraphException("Error occurred while loading the graph from the file: " + file_path);
+		}
+	}
+
+	return std::shared_ptr<gcalc::Graph>(new Graph(temp_graph));
 }
 
 bool gcalc::GraphHelper::checkGraphParentheses(std::string normal_command)

@@ -169,8 +169,19 @@ void eval(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, std:
 						auto flat_g = temp_graph.flatGraph();
 						
 						std::ofstream fd(file_path, std::ios_base::binary);
-						fd.write(flat_g.c_str(), flat_g.size());
-						fd.close();
+						if (fd.is_open())
+						{
+							fd.write(flat_g.c_str(), flat_g.size());
+							fd.close();
+						}
+						else
+						{
+							throw gcalc::GraphException("Error occurred while saving the graph to the file: " + file_path);
+						}
+						if (fd.bad())
+						{
+							throw gcalc::GraphException("Error occurred while saving the graph to the file: " + file_path);
+						}
 					}
 					catch (const std::exception&)
 					{
