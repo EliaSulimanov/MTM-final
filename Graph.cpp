@@ -63,25 +63,22 @@ void gcalc::Graph::insertEdge(std::string src, std::string dest)
 	}
 }
 
-std::string gcalc::Graph::flatGraph()
+std::vector<std::pair<size_t, std::string>> gcalc::Graph::flatGraph()
 {
-	std::string flat_graph;
+	std::vector<std::pair<size_t, std::string>> flat_graph;
 
-	flat_graph.append(std::to_string(vertex_set.size()));
-	flat_graph.append(std::to_string(edge_set.size()));
+	flat_graph.push_back(std::pair<size_t, std::string>(vertex_set.size(), ""));
+	flat_graph.push_back(std::pair<size_t, std::string>(edge_set.size(), ""));
 
 	for (auto vertex : vertex_set)
 	{
-		flat_graph.append(std::to_string(vertex.size()));
-		flat_graph.append(vertex);
+		flat_graph.push_back(std::pair<size_t, std::string>(vertex.size(), vertex));
 	}
 
 	for (auto edge : edge_set)
 	{
-		flat_graph.append(std::to_string(edge[0].size()));
-		flat_graph.append(edge[0]);
-		flat_graph.append(std::to_string(edge[1].size()));
-		flat_graph.append(edge[1]);
+		flat_graph.push_back(std::pair<size_t, std::string>(edge[0].size(), edge[0]));
+		flat_graph.push_back(std::pair<size_t, std::string>(edge[1].size(), edge[1]));
 	}
 
 	return flat_graph;

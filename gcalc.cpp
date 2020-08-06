@@ -10,7 +10,7 @@
 #include <algorithm>
 
 void gcalcLoop(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map);
-void gcalcLoop(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, char* argv[]); // TODO
+void gcalcLoop(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, char* argv[]);
 void deleteGraph(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, std::string GraphName);
 void eval(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, std::vector<std::string> command, std::string real_command);
 
@@ -71,6 +71,100 @@ void gcalcLoop(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map)
 		{
 			std::cout << "Error: " << e.what() << std::endl;
 		}
+	}
+}
+
+void gcalcLoop(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, char* argv[])
+{
+	std::string command;
+
+	std::ifstream ifs(argv[1]);
+	std::ofstream ofs(argv[2]);
+
+	std::streambuf *backup_in_stream, * backup_out_stream;
+
+	bool run = true;
+
+	if (ifs.is_open())
+	{
+		if (ofs.is_open())
+		{
+			backup_in_stream = std::cin.rdbuf();
+			backup_out_stream = std::cout.rdbuf();
+
+			std::cin.rdbuf(ifs.rdbuf()); // TODO: NEW, TO CHECK
+			std::cout.rdbuf(ofs.rdbuf());
+			while (run && getline(ifs, command))
+			{
+				try
+				{
+					std::vector<std::string> split_command = gcalc::GraphHelper::splitCommand(command);
+					if (split_command.size() == 0)
+					{
+						if (std::cin.eof())
+						{
+							break;
+						}
+					}
+					else if (split_command.size() == 1)
+					{
+						if (split_command[0].compare("quit") == 0)
+						{
+							break;
+						}
+						else if (split_command[0].compare("reset") == 0)
+						{
+							symbol_map.clear();
+						}
+						else if (split_command[0].compare("who") == 0)
+						{
+							for (auto grap : symbol_map)
+							{
+								if (grap.second != nullptr)
+								{
+									std::cout << grap.first << std::endl;
+								}
+							}
+						}
+						else
+						{
+							std::cout << "Error: Unrecognized command" << std::endl;
+						}
+					}
+					else {
+						eval(symbol_map, split_command, command);
+					}
+				}
+				catch (gcalc::FatalGraphException& e)
+				{
+					std::cerr << "Fatal Error: " << e.what() << std::endl;
+					return; // TODO: maybe just break...
+				}
+				catch (std::exception& e)
+				{
+					std::cout << "Error: " << e.what() << std::endl;
+				}
+			}
+			
+			std::cin.rdbuf(backup_in_stream);
+			std::cout.rdbuf(backup_out_stream);
+
+			ifs.close();
+			ofs.close();
+		}
+		else
+		{
+			ifs.close();
+			std::string output_file_path(argv[2]);
+			std::cerr << "Fatal error- unable to open output file: " << output_file_path << std::endl;
+			return;
+		}
+	}
+	else
+	{
+		std::string input_file_path(argv[1]);
+		std::cerr << "Fatal error- unable to open input file: " << input_file_path << std::endl;
+		return;
 	}
 }
 
@@ -171,7 +265,18 @@ void eval(std::map<std::string, std::shared_ptr<gcalc::Graph>>& symbol_map, std:
 						std::ofstream fd(file_path, std::ios_base::binary);
 						if (fd.is_open())
 						{
-							fd.write(flat_g.c_str(), flat_g.size());
+							if (flat_g.size() < 2)
+							{
+								throw gcalc::GraphException("Error while saving graph to file");
+							}
+							for (size_t i = 0; i < flat_g.size(); i++)
+							{
+								fd.write((char*)&flat_g[i].first, sizeof(size_t));
+								for (auto ch : flat_g[i].second)
+								{
+									fd.write(&ch, sizeof(char));
+								}
+							}
 							fd.close();
 						}
 						else
@@ -235,7 +340,7 @@ int main(int argc, char* argv[]) {
 	}
 	else if (argc == 3) 
 	{
-		//TODO
+		gcalcLoop(symbol_map, argv);
 	}
 	else
 	{

@@ -578,17 +578,14 @@ std::shared_ptr<gcalc::Graph> gcalc::GraphHelper::commandOperation(std::map<std:
 		return gcalc::GraphHelper::commandOperation(symbol_map, command, real_command);
 	}
 
+	// TODO: add check for g= {}{}
+
 	std::stack<std::string> brackets_stack = {};
 	
+	std::stack<std::string> crully_stack = {};
+
 	for (auto iter = command.rbegin(); iter != command.rend(); iter++)
 	{
-/*
-		if ((*iter).compare("load") == 0)
-		{
-
-		}
-*/
-
 		if ((*iter).compare(")") == 0)
 		{
 			brackets_stack.push(*iter);
@@ -609,14 +606,11 @@ std::shared_ptr<gcalc::Graph> gcalc::GraphHelper::commandOperation(std::map<std:
 				return gcalc::GraphHelper::evaluateBinaryOperation(symbol_map, left_v, right_v, op, real_command); //TODO: check if slice went well
 			}
 		}
-
-
 	}
 
 	if (command[0].compare("!") == 0) // TODO check it out
 	{
 		command.erase(command.begin());
-		//return std::shared_ptr<gcalc::Graph>(new gcalc::Graph(gcalc::complement(*(commandToGraph(symbol_map, command)))));
 		return std::shared_ptr<gcalc::Graph>(new gcalc::Graph(gcalc::complement(*(commandOperation(symbol_map, command, real_command)))));
 	}
 
@@ -672,7 +666,11 @@ std::shared_ptr<gcalc::Graph> gcalc::GraphHelper::loadGraph(std::map<std::string
 					size_t vertex_name_len;
 					fd.read((char *)&vertex_name_len, sizeof(int));
 					char* temp = new char[vertex_name_len + 1];
-					fd.read(temp, vertex_name_len);
+					
+					for (size_t i = 0; i < vertex_name_len; i++)
+					{
+						fd.read((char*)&temp[i], sizeof(char));
+					}
 					temp[vertex_name_len] = '\0';
 					std::string vertex_name(temp);
 					delete[] temp; // Check if memory leaks
@@ -684,13 +682,19 @@ std::shared_ptr<gcalc::Graph> gcalc::GraphHelper::loadGraph(std::map<std::string
 					size_t src_vertex_name_len;
 					fd.read((char*)&src_vertex_name_len, sizeof(int));
 					char* temp = new char[src_vertex_name_len + 1];
-					fd.read(temp, src_vertex_name_len);
+					for (size_t i = 0; i < src_vertex_name_len; i++)
+					{
+						fd.read((char*)&temp[i], sizeof(char));
+					}
 					temp[src_vertex_name_len] = '\0';
 
 					size_t dest_vertex_name_len;
 					fd.read((char*)&dest_vertex_name_len, sizeof(int));
 					char* temp_b = new char[dest_vertex_name_len + 1];
-					fd.read(temp_b, dest_vertex_name_len);
+					for (size_t i = 0; i < dest_vertex_name_len; i++)
+					{
+						fd.read((char*)&temp_b[i], sizeof(char));
+					}
 					temp_b[dest_vertex_name_len] = '\0';
 
 					std::string src_vertex_name(temp);
