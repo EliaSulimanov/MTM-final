@@ -4,31 +4,28 @@
 #include <iostream>
 #include <exception>
 
-namespace gcalc 
+class graphException : public std::exception
 {
-	class graphException : public std::exception
+private:
+	std::string message;
+public:
+	graphException(std::string message) noexcept : message(message) {}
+	virtual const char* what() const noexcept override
 	{
-	private:
-		std::string message;
-	public:
-		graphException(std::string message) noexcept : message(message) {}
-		virtual const char* what() const noexcept override
-		{
-			return message.c_str();
-		}
-	};
+		return message.c_str();
+	}
+};
 
-	class FatalgraphException : public std::exception
+class FatalgraphException : public std::exception
+{
+private:
+	std::string message;
+public:
+	FatalgraphException(std::string message) noexcept : message(message) {}
+	virtual const char* what() const noexcept override
 	{
-	private:
-		std::string message;
-	public:
-		FatalgraphException(std::string message) noexcept : message(message) {}
-		virtual const char* what() const noexcept override
-		{
-			return message.c_str();
-		}
-	};
-}
+		return message.c_str();
+	}
+};
 
 #endif

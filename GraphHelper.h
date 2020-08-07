@@ -14,36 +14,34 @@
 #include "graph.h"
 #include "graphException.h"
 
-namespace gcalc {
-	class graphHelper
-	{
-	private:
-		static bool checkgraphParentheses(std::string normal_command);
-		static size_t findNextTokenPos(std::string command);
-		
-		static void clearChar(std::string& command, char ch);
-		static bool isBinaryOper(std::string oper);
-		static bool isOpeningSign(std::string oper);
-		static bool isClosingSign(std::string oper);
+class graphHelper
+{
+private:
+	static bool checkgraphParentheses(std::string normal_command);
+	static size_t findNextTokenPos(std::string command);
 
-	public:
-		static bool checkFileName(std::vector<std::string> filename);
-		static void clearWhiteSpaces(std::string& command);
-		static bool checkParenthesesBalance(std::string normal_command);
-		static bool vertexNameCheck(std::string vertex_name);
-		static std::vector<std::string> splitCommand(const std::string command);
-		static bool checkNoDuplicateCommands(std::vector<std::string> command);
-		static bool checkgraphSyntax(std::vector<std::string> command);
-		static std::shared_ptr<gcalc::graph> commandTograph(std::map<std::string, std::shared_ptr<gcalc::graph>>& symbol_map, std::vector<std::string> split_command);
-		static bool checkgraphName(std::string graph_name);
-		static std::shared_ptr<gcalc::graph> evaluateBinaryOperation(std::map<std::string, std::shared_ptr<gcalc::graph>>& symbol_map, std::vector<std::string> left_graph, std::vector<std::string> right_graph, std::string oper, std::string real_command);
-		static std::shared_ptr<gcalc::graph> evaluateBinaryOperation(std::map<std::string, std::shared_ptr<gcalc::graph>>& symbol_map, std::shared_ptr<gcalc::graph> left_graph, std::shared_ptr<gcalc::graph> right_graph, std::string oper);
-		static std::shared_ptr<gcalc::graph> evaluateBinaryOperation(std::map<std::string, std::shared_ptr<gcalc::graph>>& symbol_map, std::vector<std::string> left_graph, std::shared_ptr<gcalc::graph> right_graph, std::string oper);
-		static std::shared_ptr<gcalc::graph> evaluateBinaryOperation(std::map<std::string, std::shared_ptr<gcalc::graph>>& symbol_map, std::shared_ptr<gcalc::graph> left_graph, std::vector<std::string> right_graph, std::string oper);
-		
-		static std::shared_ptr<gcalc::graph> commandOperation(std::map<std::string, std::shared_ptr<gcalc::graph>>& symbol_map, std::vector<std::string> command, std::string real_command);
-		static std::shared_ptr<gcalc::graph> loadgraph(std::map<std::string, std::shared_ptr<gcalc::graph>>& symbol_map, std::vector<std::string> command, std::string real_command);
-	};
-}
+	static void clearChar(std::string& command, char ch);
+	static bool isBinaryOper(std::string oper);
+	static bool isOpeningSign(std::string oper);
+	static bool isClosingSign(std::string oper);
+
+public:
+	static bool checkFileName(std::vector<std::string> filename);
+	static void clearWhiteSpaces(std::string& command);
+	static bool checkParenthesesBalance(std::string normal_command);
+	static bool vertexNameCheck(std::string vertex_name);
+	static std::vector<std::string> splitCommand(const std::string command);
+	static bool checkNoDuplicateCommands(std::vector<std::string> command);
+	static bool checkgraphSyntax(std::vector<std::string> command);
+	static std::shared_ptr<graph> commandTograph(std::map<std::string, std::shared_ptr<graph>>& symbol_map, std::vector<std::string> split_command);
+	static bool checkgraphName(std::string graph_name);
+	static std::shared_ptr<graph> evaluateBinaryOperation(std::map<std::string, std::shared_ptr<graph>>& symbol_map, std::vector<std::string> left_graph, std::vector<std::string> right_graph, std::string oper, std::string real_command);
+	static std::shared_ptr<graph> evaluateBinaryOperation(std::map<std::string, std::shared_ptr<graph>>& symbol_map, std::shared_ptr<graph> left_graph, std::shared_ptr<graph> right_graph, std::string oper);
+	static std::shared_ptr<graph> evaluateBinaryOperation(std::map<std::string, std::shared_ptr<graph>>& symbol_map, std::vector<std::string> left_graph, std::shared_ptr<graph> right_graph, std::string oper);
+	static std::shared_ptr<graph> evaluateBinaryOperation(std::map<std::string, std::shared_ptr<graph>>& symbol_map, std::shared_ptr<graph> left_graph, std::vector<std::string> right_graph, std::string oper);
+
+	static std::shared_ptr<graph> commandOperation(std::map<std::string, std::shared_ptr<graph>>& symbol_map, std::vector<std::string> command, std::string real_command);
+	static std::shared_ptr<graph> loadgraph(std::map<std::string, std::shared_ptr<graph>>& symbol_map, std::vector<std::string> command, std::string real_command);
+};
 
 #endif

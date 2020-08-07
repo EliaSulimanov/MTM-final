@@ -1,11 +1,11 @@
 #include "graphWarper.h"
 #include "graphException.h"
 
-gcalc::graph* graphWarper::create()
+graph* graphWarper::create()
 {
     try
     {
-        gcalc::graph* return_graph = new gcalc::graph();
+        graph* return_graph = new graph();
         return return_graph;
     }
     catch (std::exception&)
@@ -15,7 +15,7 @@ gcalc::graph* graphWarper::create()
     }
 }
 
-void graphWarper::destroy(gcalc::graph* graph)
+void graphWarper::destroy(graph* graph)
 {
     if (graph != nullptr)
     {
@@ -23,7 +23,7 @@ void graphWarper::destroy(gcalc::graph* graph)
     }
 }
 
-gcalc::graph* graphWarper::addVertex(gcalc::graph* graph, std::string v)
+graph* graphWarper::addVertex(graph* graph, std::string v)
 {
     if (graph != nullptr)
     {
@@ -44,7 +44,7 @@ gcalc::graph* graphWarper::addVertex(gcalc::graph* graph, std::string v)
     }
 }
 
-gcalc::graph* graphWarper::addEdge(gcalc::graph* graph, std::string v1, std::string v2)
+graph* graphWarper::addEdge(graph* graph, std::string v1, std::string v2)
 {
 	if (graph != nullptr)
 	{
@@ -65,12 +65,12 @@ gcalc::graph* graphWarper::addEdge(gcalc::graph* graph, std::string v1, std::str
 	}
 }
 
-void graphWarper::disp(gcalc::graph* graph)
+void graphWarper::disp(graph* graph)
 {
 	if (graph != nullptr)
 	{
 		try {
-			gcalc::printGraph(*graph);
+			graph::printGraph(*graph);
 		}
 		catch (std::exception& e)
 		{
@@ -83,12 +83,12 @@ void graphWarper::disp(gcalc::graph* graph)
 	}
 }
 
-gcalc::graph* graphWarper::graphUnion(gcalc::graph* graph_in1, gcalc::graph* graph_in2, gcalc::graph* graph_out)
+graph* graphWarper::graphUnion(graph* graph_in1, graph* graph_in2, graph* graph_out)
 {
 	if (graph_in1 != nullptr && graph_in2 != nullptr && graph_out != nullptr)
 	{
 		try {
-			gcalc::graph result = gcalc::unite(*graph_in1, *graph_in2);
+			graph result = graph::unite(*graph_in1, *graph_in2);
 			*graph_out = result;
 			return graph_out;
 		}
@@ -105,12 +105,12 @@ gcalc::graph* graphWarper::graphUnion(gcalc::graph* graph_in1, gcalc::graph* gra
 	}
 }
 
-gcalc::graph* graphWarper::graphIntersection(gcalc::graph* graph_in1, gcalc::graph* graph_in2, gcalc::graph* graph_out)
+graph* graphWarper::graphIntersection(graph* graph_in1, graph* graph_in2, graph* graph_out)
 {
 	if (graph_in1 != nullptr && graph_in2 != nullptr && graph_out != nullptr)
 	{
 		try {
-			gcalc::graph result = gcalc::intersect(*graph_in1, *graph_in2);
+			graph result = graph::intersect(*graph_in1, *graph_in2);
 			*graph_out = result;
 			return graph_out;
 		}
@@ -127,12 +127,12 @@ gcalc::graph* graphWarper::graphIntersection(gcalc::graph* graph_in1, gcalc::gra
 	}
 }
 
-gcalc::graph* graphWarper::graphDifference(gcalc::graph* graph_in1, gcalc::graph* graph_in2, gcalc::graph* graph_out)
+graph* graphWarper::graphDifference(graph* graph_in1, graph* graph_in2, graph* graph_out)
 {
 	if (graph_in1 != nullptr && graph_in2 != nullptr && graph_out != nullptr)
 	{
 		try {
-			gcalc::graph result = gcalc::diff(*graph_in1, *graph_in2);
+			graph result = graph::diff(*graph_in1, *graph_in2);
 			*graph_out = result;
 			return graph_out;
 		}
@@ -149,12 +149,12 @@ gcalc::graph* graphWarper::graphDifference(gcalc::graph* graph_in1, gcalc::graph
 	}
 }
 
-gcalc::graph* graphWarper::graphProduct(gcalc::graph* graph_in1, gcalc::graph* graph_in2, gcalc::graph* graph_out)
+graph* graphWarper::graphProduct(graph* graph_in1, graph* graph_in2, graph* graph_out)
 {
 	if (graph_in1 != nullptr && graph_in2 != nullptr && graph_out != nullptr)
 	{
 		try {
-			gcalc::graph result = gcalc::cross(*graph_in1, *graph_in2);
+			graph result = graph::cross(*graph_in1, *graph_in2);
 			*graph_out = result;
 			return graph_out;
 		}
@@ -171,12 +171,12 @@ gcalc::graph* graphWarper::graphProduct(gcalc::graph* graph_in1, gcalc::graph* g
 	}
 }
 
-gcalc::graph* graphWarper::graphComplement(gcalc::graph* graph_in, gcalc::graph* graph_out)
+graph* graphWarper::graphComplement(graph* graph_in, graph* graph_out)
 {
 	if (graph_in != nullptr && graph_out != nullptr)
 	{
 		try {
-			gcalc::graph result = gcalc::complement(*graph_in);
+			graph result = graph::complement(*graph_in);
 			*graph_out = result;
 			return graph_out;
 		}

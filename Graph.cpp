@@ -2,32 +2,32 @@
 #include "graphHelper.h"
 #include "graphException.h"
 
-gcalc::graph::graph()
+graph::graph()
 {
 	vertex_set.clear();
 	edge_set.clear();
 }
 
-gcalc::graph::graph(const graph& rhg)
+graph::graph(const graph& rhg)
 {
 	this->vertex_set = rhg.vertex_set;
 	this->edge_set = rhg.edge_set;
 }
 
-gcalc::graph& gcalc::graph::operator=(const graph& rhg)
+graph& graph::operator=(const graph& rhg)
 {
 	this->vertex_set = rhg.vertex_set;
 	this->edge_set = rhg.edge_set;
 	return *this;
 }
 
-void gcalc::graph::insertVertex(std::string vertex)
+void graph::insertVertex(std::string vertex)
 {
-	if (gcalc::graphHelper::vertexNameCheck(vertex))
+	if (graphHelper::vertexNameCheck(vertex))
 	{
 		if (this->vertex_set.find(vertex) != this->vertex_set.end()) // vertex already exists
 		{
-			throw gcalc::graphException("Invalid graph syntax - vertex already exists");
+			throw graphException("Invalid graph syntax - vertex already exists");
 		}
 		else 
 		{
@@ -36,24 +36,24 @@ void gcalc::graph::insertVertex(std::string vertex)
 	}
 }
 
-void gcalc::graph::insertEdge(std::string src, std::string dest)
+void graph::insertEdge(std::string src, std::string dest)
 {
-	if (gcalc::graphHelper::vertexNameCheck(src) && gcalc::graphHelper::vertexNameCheck(dest))
+	if (graphHelper::vertexNameCheck(src) && graphHelper::vertexNameCheck(dest))
 	{
 		if (src.compare(dest) == 0) // self loop
 		{
-			throw gcalc::graphException("Invalid graph syntax - self loop edge not allowed");
+			throw graphException("Invalid graph syntax - self loop edge not allowed");
 		}
 		else if (this->vertex_set.find(src) == this->vertex_set.end() || this->vertex_set.find(dest) == this->vertex_set.end()) // vertex not exist
 		{
-			throw gcalc::graphException("Invalid graph syntax - edge vertex not exist");
+			throw graphException("Invalid graph syntax - edge vertex not exist");
 		}
 		else
 		{
 			std::vector<std::string> temp {src, dest};
 			if (this->edge_set.find(temp) != this->edge_set.end()) // edge exist
 			{
-				throw gcalc::graphException("Invalid graph syntax - edge already exist");
+				throw graphException("Invalid graph syntax - edge already exist");
 			}
 			else
 			{
@@ -63,7 +63,7 @@ void gcalc::graph::insertEdge(std::string src, std::string dest)
 	}
 }
 
-std::vector<std::pair<size_t, std::string> > gcalc::graph::flatgraph()
+std::vector<std::pair<size_t, std::string> > graph::flatgraph()
 {
 	std::vector<std::pair<size_t, std::string> > flat_graph;
 
@@ -84,18 +84,18 @@ std::vector<std::pair<size_t, std::string> > gcalc::graph::flatgraph()
 	return flat_graph;
 }
 
-gcalc::graph gcalc::unite(const graph& lhg, const graph& rhg)
+graph graph::unite(const graph& lhg, const graph& rhg)
 {
-	gcalc::graph result(lhg);
+	graph result(lhg);
 	result.vertex_set.insert(rhg.vertex_set.begin(), rhg.vertex_set.end()); 
 	result.edge_set.insert(rhg.edge_set.begin(), rhg.edge_set.end()); // TODO: check if this works as expected
 
 	return result;
 }
 
-gcalc::graph gcalc::intersect(const graph& lhg, const graph& rhg)
+graph graph::intersect(const graph& lhg, const graph& rhg)
 {
-	gcalc::graph result;
+	graph result;
 	for (auto vertex : lhg.vertex_set)
 	{
 		if (rhg.vertex_set.find(vertex) != rhg.vertex_set.end()) // exists in both
@@ -115,9 +115,9 @@ gcalc::graph gcalc::intersect(const graph& lhg, const graph& rhg)
 	return result;
 }
 
-gcalc::graph gcalc::diff(const graph& lhg, const graph& rhg)
+graph graph::diff(const graph& lhg, const graph& rhg)
 {
-	gcalc::graph result;
+	graph result;
 	for (auto vertex : lhg.vertex_set)
 	{
 		if (rhg.vertex_set.find(vertex) == rhg.vertex_set.end()) // exists on left graph but not on right
@@ -138,9 +138,9 @@ gcalc::graph gcalc::diff(const graph& lhg, const graph& rhg)
 	return result;
 }
 
-gcalc::graph gcalc::cross(const graph& lhg, const graph& rhg)
+graph graph::cross(const graph& lhg, const graph& rhg)
 {
-	gcalc::graph result; // TODO: test this. Not sure about the product
+	graph result; // TODO: test this. Not sure about the product
 
 	for (auto left_v : lhg.vertex_set)
 	{
@@ -161,9 +161,9 @@ gcalc::graph gcalc::cross(const graph& lhg, const graph& rhg)
 	return result;
 }
 
-gcalc::graph gcalc::complement(const graph& grap)
+graph graph::complement(const graph& grap)
 {
-	gcalc::graph result; // TODO: check on complex graphs
+	graph result; // TODO: check on complex graphs
 	result.vertex_set = grap.vertex_set; // TODO: check if it alloc new memory for this or use the same
 	for (auto left_v : grap.vertex_set) 
 	{
@@ -191,7 +191,7 @@ gcalc::graph gcalc::complement(const graph& grap)
 	return result;
 }
 
-void gcalc::printGraph(const graph& grap)
+void graph::printGraph(const graph& grap)
 {
 	for (auto vertex : grap.vertex_set)
 	{
@@ -206,3 +206,194 @@ void gcalc::printGraph(const graph& grap)
 	}
 }
 
+graph* create()
+{
+	try
+	{
+		graph* return_graph = new graph();
+		return return_graph;
+	}
+	catch (std::exception&)
+	{
+		std::cout << "Error: error occurred while creating new graph" << std::endl;
+		return nullptr;
+	}
+}
+
+void destroy(graph* graph)
+{
+	if (graph != nullptr)
+	{
+		delete graph;
+	}
+}
+
+graph* addVertex(graph* graph, std::string v)
+{
+	if (graph != nullptr)
+	{
+		try {
+			graph->insertVertex(v);
+			return graph;
+		}
+		catch (std::exception& e)
+		{
+			std::cout << "Error: " << e.what() << std::endl;
+			return nullptr;
+		}
+	}
+	else
+	{
+		std::cout << "Error: The graph is null, can not add vertex" << std::endl;
+		return nullptr;
+	}
+}
+
+graph* addEdge(graph* graph, std::string v1, std::string v2)
+{
+	if (graph != nullptr)
+	{
+		try {
+			graph->insertEdge(v1, v2);
+			return graph;
+		}
+		catch (std::exception& e)
+		{
+			std::cout << "Error: " << e.what() << std::endl;
+			return nullptr;
+		}
+	}
+	else
+	{
+		std::cout << "Error: The graph is null, can not add edge" << std::endl;
+		return nullptr;
+	}
+}
+
+void disp(graph* graph)
+{
+	if (graph != nullptr)
+	{
+		try {
+			graph::printGraph(*graph);
+		}
+		catch (std::exception& e)
+		{
+			std::cout << "Error: " << e.what() << std::endl;
+		}
+	}
+	else
+	{
+		std::cout << "Error: The graph is null, can not print" << std::endl;
+	}
+}
+
+graph* graphUnion(graph* graph_in1, graph* graph_in2, graph* graph_out)
+{
+	if (graph_in1 != nullptr && graph_in2 != nullptr && graph_out != nullptr)
+	{
+		try {
+			graph result = graph::unite(*graph_in1, *graph_in2);
+			*graph_out = result;
+			return graph_out;
+		}
+		catch (std::exception& e)
+		{
+			std::cout << "Error: " << e.what() << std::endl;
+			return graph_out;
+		}
+	}
+	else
+	{
+		std::cout << "Error: Passed null graph, can not unite" << std::endl;
+		return graph_out;
+	}
+}
+
+graph* graphIntersection(graph* graph_in1, graph* graph_in2, graph* graph_out)
+{
+	if (graph_in1 != nullptr && graph_in2 != nullptr && graph_out != nullptr)
+	{
+		try {
+			graph result = graph::intersect(*graph_in1, *graph_in2);
+			*graph_out = result;
+			return graph_out;
+		}
+		catch (std::exception& e)
+		{
+			std::cout << "Error: " << e.what() << std::endl;
+			return graph_out;
+		}
+	}
+	else
+	{
+		std::cout << "Error: Passed null graph, can not intersect" << std::endl;
+		return graph_out;
+	}
+}
+
+graph* graphDifference(graph* graph_in1, graph* graph_in2, graph* graph_out)
+{
+	if (graph_in1 != nullptr && graph_in2 != nullptr && graph_out != nullptr)
+	{
+		try {
+			graph result = graph::diff(*graph_in1, *graph_in2);
+			*graph_out = result;
+			return graph_out;
+		}
+		catch (std::exception& e)
+		{
+			std::cout << "Error: " << e.what() << std::endl;
+			return graph_out;
+		}
+	}
+	else
+	{
+		std::cout << "Error: Passed null graph, can not difference" << std::endl;
+		return graph_out;
+	}
+}
+
+graph* graphProduct(graph* graph_in1, graph* graph_in2, graph* graph_out)
+{
+	if (graph_in1 != nullptr && graph_in2 != nullptr && graph_out != nullptr)
+	{
+		try {
+			graph result = graph::cross(*graph_in1, *graph_in2);
+			*graph_out = result;
+			return graph_out;
+		}
+		catch (std::exception& e)
+		{
+			std::cout << "Error: " << e.what() << std::endl;
+			return graph_out;
+		}
+	}
+	else
+	{
+		std::cout << "Error: Passed null graph, can not product" << std::endl;
+		return graph_out;
+	}
+}
+
+graph* graphComplement(graph* graph_in, graph* graph_out)
+{
+	if (graph_in != nullptr && graph_out != nullptr)
+	{
+		try {
+			graph result = graph::complement(*graph_in);
+			*graph_out = result;
+			return graph_out;
+		}
+		catch (std::exception& e)
+		{
+			std::cout << "Error: " << e.what() << std::endl;
+			return graph_out;
+		}
+	}
+	else
+	{
+		std::cout << "Error: Passed null graph, can not complement" << std::endl;
+		return graph_out;
+	}
+}
