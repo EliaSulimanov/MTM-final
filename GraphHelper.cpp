@@ -20,7 +20,7 @@ bool graphHelper::vertexNameCheck(std::string vertex_name) {
 	for(char ch : vertex_name)
 	{
 		if (!isalnum(ch) && ch != '[' && ch != ']' && ch != ';') {
-			throw graphException("Vertex name can not have this sign: " + ch);
+			throw graphException("Vertex name is invalid: " + vertex_name);
 		}
 		else
 		{
@@ -30,7 +30,7 @@ bool graphHelper::vertexNameCheck(std::string vertex_name) {
 			}
 			if (ch == ']') {
 				if (pranthesis_stack.empty()) {
-					throw graphException("Bad vertex name");
+					throw graphException("Vertex name is invalid: " + vertex_name);
 				}
 				pranthesis_stack.pop();
 				continue;
@@ -38,13 +38,13 @@ bool graphHelper::vertexNameCheck(std::string vertex_name) {
 			if (ch == ';') {
 				if (pranthesis_stack.empty())
 				{
-					throw graphException("Bad vertex name");
+					throw graphException("Vertex name is invalid: " + vertex_name);
 				}
 			}
 		}
 	}
 	if (!pranthesis_stack.empty()) {
-		throw graphException("Bad vertex name");
+		throw graphException("Vertex name is invalid: " + vertex_name);
 	}
 	return true;
 }
@@ -83,9 +83,10 @@ void graphHelper::clearChar(std::string& command, char ch)
 
 std::vector<std::string> graphHelper::splitCommand(const std::string command)
 {
-	std::vector<std::string> split_command;
+	
 	if (checkParenthesesBalance(command))
 	{
+		std::vector<std::string> split_command;
 		std::string temp_command = command;
 
 		while (!temp_command.empty())
@@ -107,8 +108,9 @@ std::vector<std::string> graphHelper::splitCommand(const std::string command)
 			}
 			temp_command.erase(0, 1);
 		}
+		return split_command;
 	}
-	return split_command;
+	throw graphException("Invalid syntax- bad parentheses balance");
 }
 
 bool graphHelper::checkNoDuplicateCommands(std::vector<std::string> command)
@@ -796,6 +798,10 @@ bool graphHelper::checkParenthesesBalance(std::string normal_command)
 			switch (ch)
 			{
 			case ']':
+				if (pre_stack.empty())
+				{
+					throw graphException("Invalid syntax, the bracket ] missing opener");
+				}
 				if (pre_stack.top() == '(' || pre_stack.top() == '{' || pre_stack.top() == '<')
 				{
 					throw graphException("Invalid syntax");
@@ -806,6 +812,10 @@ bool graphHelper::checkParenthesesBalance(std::string normal_command)
 				}
 				break;
 			case ')':
+				if (pre_stack.empty())
+				{
+					throw graphException("Invalid syntax, the bracket ) missing opener");
+				}
 				if (pre_stack.top() == '[' || pre_stack.top() == '{' || pre_stack.top() == '<')
 				{
 					throw graphException("Invalid syntax");
@@ -816,6 +826,10 @@ bool graphHelper::checkParenthesesBalance(std::string normal_command)
 				}
 				break;
 			case '}':
+				if (pre_stack.empty())
+				{
+					throw graphException("Invalid syntax, the bracket } missing opener");
+				}
 				if (pre_stack.top() == '[' || pre_stack.top() == '(' || pre_stack.top() == '<')
 				{
 					throw graphException("Invalid syntax");
@@ -826,6 +840,10 @@ bool graphHelper::checkParenthesesBalance(std::string normal_command)
 				}
 				break;
 			case '>':
+				if (pre_stack.empty())
+				{
+					throw graphException("Invalid syntax, the bracket > missing opener");
+				}
 				if (pre_stack.top() == '[' || pre_stack.top() == '(' || pre_stack.top() == '{')
 				{
 					throw graphException("Invalid syntax");

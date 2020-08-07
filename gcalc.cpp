@@ -216,11 +216,11 @@ void eval(std::map<std::string, std::shared_ptr<graph>>& symbol_map, std::vector
 		{
 			if (command[1].compare("(") != 0 || command.size() != 4)
 			{
-				throw graphException("Invalid syntax");
+				throw graphException("Invalid syntax- delete can only take graph name");
 			}
 			if (command[1].compare("(") == 0 && command[command.size() - 1].compare(")") != 0)
 			{
-				throw graphException("Invalid syntax");
+				throw graphException("Invalid syntax- missing ) sign");
 			}
 			deletegraph(symbol_map, command[2]);
 		}
