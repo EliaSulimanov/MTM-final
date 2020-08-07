@@ -64,7 +64,7 @@ void gcalcLoop(std::map<std::string, std::shared_ptr<graph>>& symbol_map) {
 		}
 		catch (FatalgraphException& e)
 		{
-			std::cerr << "Fatal Error: " << e.what() << std::endl;
+			std::cerr << "Error: " << e.what() << std::endl;
 			return; // TODO: maybe just break...
 		}
 		catch (std::exception& e)
@@ -92,7 +92,7 @@ void gcalcLoop(std::map<std::string, std::shared_ptr<graph>>& symbol_map, char* 
 			backup_in_stream = std::cin.rdbuf();
 			backup_out_stream = std::cout.rdbuf();
 
-			std::cin.rdbuf(ifs.rdbuf()); // TODO: NEW, TO CHECK
+			std::cin.rdbuf(ifs.rdbuf());
 			std::cout.rdbuf(ofs.rdbuf());
 			while (run && getline(ifs, command))
 			{
@@ -138,8 +138,8 @@ void gcalcLoop(std::map<std::string, std::shared_ptr<graph>>& symbol_map, char* 
 				}
 				catch (FatalgraphException& e)
 				{
-					std::cerr << "Fatal Error: " << e.what() << std::endl;
-					return; // TODO: maybe just break...
+					std::cout << "Error: " << e.what() << std::endl;
+					return;
 				}
 				catch (std::exception& e)
 				{
@@ -157,14 +157,14 @@ void gcalcLoop(std::map<std::string, std::shared_ptr<graph>>& symbol_map, char* 
 		{
 			ifs.close();
 			std::string output_file_path(argv[2]);
-			std::cerr << "Fatal error- unable to open output file: " << output_file_path << std::endl;
+			std::cerr << "Error- unable to open output file: " << output_file_path << std::endl;
 			return;
 		}
 	}
 	else
 	{
 		std::string input_file_path(argv[1]);
-		std::cerr << "Fatal error- unable to open input file: " << input_file_path << std::endl;
+		std::cerr << "Error- unable to open input file: " << input_file_path << std::endl;
 		return;
 	}
 }
@@ -187,11 +187,11 @@ void eval(std::map<std::string, std::shared_ptr<graph>>& symbol_map, std::vector
 		{
 			if (command[1].compare("(") != 0)
 			{
-				throw graphException("Invalid syntax");
+				throw graphException("Invalid syntax- missing opening bracket after print command");
 			}
 			if (command[1].compare("(") == 0 && command[command.size() - 1].compare(")") != 0)
 			{
-				throw graphException("Invalid syntax");
+				throw graphException("Invalid syntax- print command missing bracket");
 			}
 			if (command.size() == 4) // The argument is graph name
 			{
@@ -334,7 +334,7 @@ int main(int argc, char* argv[]) {
 	}
 	else
 	{
-		std::cerr << "Fatal Error: Invalid number of arguments" << std::endl;
+		std::cerr << "Error: Invalid number of arguments" << std::endl;
 		return 0;
 	}
 }

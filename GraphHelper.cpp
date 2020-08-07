@@ -12,10 +12,6 @@ bool graphHelper::vertexNameCheck(std::string vertex_name) {
 	if (vertex_name.empty()) {
 		throw graphException("Empty vertex name");
 	}
-	if (invalid_names.find(vertex_name) != invalid_names.end()) // function name
-	{
-		throw graphException("Vertex name can not be a function name");
-	}
 	std::stack<char> pranthesis_stack;
 	for(char ch : vertex_name)
 	{
@@ -307,19 +303,12 @@ std::shared_ptr<graph> graphHelper::commandTograph(std::map<std::string, std::sh
 	{
 		throw graphException("Invalid syntax, empty command is not allowed");
 	}
-	// TODO: test that, as commandOper is doing the complemention.
-	/*
-	if (command[0].compare("!") == 0)
-	{
-		command.erase(command.begin());
-		return std::shared_ptr<graph>(new graph(complement(*(commandTograph(symbol_map, command)))));
-	}*/
 
 	if (command.size() == 1) // It is a variable name
 	{
 		if (symbol_map.find(command[0]) == symbol_map.end())
 		{
-			throw graphException("Undefined variable");
+			throw graphException("Undefined variable: " + command[0]);
 		}
 		else
 		{	
@@ -329,7 +318,7 @@ std::shared_ptr<graph> graphHelper::commandTograph(std::map<std::string, std::sh
 
 	if (command[0].compare("{") != 0 || command[command.size() - 1].compare("}") != 0)
 	{
-		throw graphException("Invalid syntax");
+		throw graphException("Invalid syntax- graph missing bracket");
 	}
 
 	if (checkgraphSyntax(command))
@@ -353,7 +342,7 @@ std::shared_ptr<graph> graphHelper::commandTograph(std::map<std::string, std::sh
 					{
 						if (!(command[i - 1].compare(">") == 0 && command[i + 1].compare("<") == 0))
 						{
-							throw graphException("Invalid syntax");
+							throw graphException("Invalid edge syntax- missing bracket");
 						}
 					}
 					if (command[i].compare("<") == 0)
@@ -365,7 +354,7 @@ std::shared_ptr<graph> graphHelper::commandTograph(std::map<std::string, std::sh
 				{
 					if (command[i + 1].compare(",") != 0 || command[i + 3].compare(">") != 0)
 					{
-						throw graphException("Invalid syntax");
+						throw graphException("Invalid edge syntax- comma or brackets are missing");
 					}
 					else
 					{
@@ -395,25 +384,23 @@ bool graphHelper::checkgraphName(std::string graph_name)
 {
 	if (graph_name.empty())
 	{
-		throw graphException("Invalid graph name");
+		throw graphException("Invalid graph name - empty name is not allowed");
 	}
 	if (!isalpha(graph_name[0]))
 	{
-		throw graphException("Invalid graph name");
+		throw graphException("Invalid graph name- first char must be alphabetic");
 	}
 	for (auto ch : graph_name)
 	{
 		if (!isalnum(ch))
 		{
-			throw graphException("Invalid graph name");
+			throw graphException("Invalid graph name- name must only contain alpha numeric chars");
 		}
 	}
 	if (invalid_names.find(graph_name) != invalid_names.end()) // function name
 	{
-		throw graphException("Invalid graph name");
+		throw graphException("Invalid graph name- command name as graph name are disallowed");
 	}
-
-	// TODO: add check if it is function name
 
 	return true;
 }
@@ -451,7 +438,7 @@ std::shared_ptr<graph> graphHelper::evaluateBinaryOperation(std::map<std::string
 	}
 	else
 	{
-		throw graphException("Invalid graph syntax");
+		throw graphException("Invalid graph syntax- bad parentheses in graph definition");
 	}
 }
 
@@ -474,7 +461,7 @@ std::shared_ptr<graph> graphHelper::evaluateBinaryOperation(std::map<std::string
 		result_graph = graph::cross(*left_graph, *right_graph);
 		break;
 	default:
-		throw FatalgraphException("Fatal error while evaluating operation");
+		throw graphException("Invalid operator type");
 		break;
 	}
 
@@ -507,7 +494,7 @@ std::shared_ptr<graph> graphHelper::evaluateBinaryOperation(std::map<std::string
 	}
 	else
 	{
-		throw graphException("Invalid graph syntax");
+		throw graphException("Invalid graph syntax- parentheses problem");
 	}
 }
 
@@ -537,7 +524,7 @@ std::shared_ptr<graph> graphHelper::evaluateBinaryOperation(std::map<std::string
 	}
 	else
 	{
-		throw graphException("Invalid graph syntax");
+		throw graphException("Invalid graph syntax- parentheses problem");
 	}
 }
 
@@ -621,7 +608,7 @@ std::shared_ptr<graph> graphHelper::commandOperation(std::map<std::string, std::
 		{
 			if (command.size() != 4)
 			{
-				throw graphException("Invalid load command");
+				throw graphException("Invalid load command- load command can take only one argument");
 			}
 			return loadgraph(symbol_map, command, real_command);
 		}
@@ -737,19 +724,19 @@ bool graphHelper::checkgraphParentheses(std::string normal_command)
 		{
 			if (pre_stack.empty())
 			{
-				throw graphException("Invalid syntax");
+				throw graphException("Invalid syntax- the } sign missing an opener");
 			}
 			pre_stack.pop();
 		}
 
 		if (pre_stack.size() > 1)
 		{
-			throw graphException("Invalid syntax");
+			throw graphException("Invalid syntax- graph in graph is not allowed");
 		}
 	}
 	if (!pre_stack.empty())
 	{
-		throw graphException("Invalid syntax");
+		throw graphException("Invalid syntax- missing } sign");
 	}
 
 	return true;
@@ -804,7 +791,7 @@ bool graphHelper::checkParenthesesBalance(std::string normal_command)
 				}
 				if (pre_stack.top() == '(' || pre_stack.top() == '{' || pre_stack.top() == '<')
 				{
-					throw graphException("Invalid syntax");
+					throw graphException("Invalid syntax- the brackets order is wrong");
 				}
 				else
 				{
@@ -818,7 +805,7 @@ bool graphHelper::checkParenthesesBalance(std::string normal_command)
 				}
 				if (pre_stack.top() == '[' || pre_stack.top() == '{' || pre_stack.top() == '<')
 				{
-					throw graphException("Invalid syntax");
+					throw graphException("Invalid syntax- the brackets order is wrong");
 				}
 				else
 				{
@@ -832,7 +819,7 @@ bool graphHelper::checkParenthesesBalance(std::string normal_command)
 				}
 				if (pre_stack.top() == '[' || pre_stack.top() == '(' || pre_stack.top() == '<')
 				{
-					throw graphException("Invalid syntax");
+					throw graphException("Invalid syntax- the brackets order is wrong");
 				}
 				else
 				{
@@ -846,7 +833,7 @@ bool graphHelper::checkParenthesesBalance(std::string normal_command)
 				}
 				if (pre_stack.top() == '[' || pre_stack.top() == '(' || pre_stack.top() == '{')
 				{
-					throw graphException("Invalid syntax");
+					throw graphException("Invalid syntax- the brackets order is wrong");
 				}
 				else
 				{
