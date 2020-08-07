@@ -220,6 +220,198 @@ graph* create()
 	}
 }
 
+void destroy(graph* graph)
+{
+	if (graph != nullptr)
+	{
+		delete graph;
+	}
+}
+
+graph* addVertex(graph* graph, char* v)
+{
+	if (graph != nullptr)
+	{
+		if (v == NULL)
+		{
+			std::cout << "Error: memory error, vertex name is lost" << std::endl;
+			return graph;
+		}
+		std::string vertex = v;
+		try {
+			graph->insertVertex(vertex);
+			return graph;
+		}
+		catch (std::exception& e)
+		{
+			std::cout << "Error: " << e.what() << std::endl;
+			return nullptr;
+		}
+	}
+	else
+	{
+		std::cout << "Error: The graph is null, can not add vertex" << std::endl;
+		return nullptr;
+	}
+}
+
+graph* addEdge(graph* graph, char* v1, char* v2)
+{
+	if (graph != nullptr)
+	{
+		if (v1 == NULL || v2 == NULL)
+		{
+			std::cout << "Error: memory error, vertex name is lost" << std::endl;
+			return graph;
+		}
+		std::string vertex1 = v1;
+		std::string vertex2 = v2;
+
+		try {
+			graph->insertEdge(vertex1, vertex2);
+			return graph;
+		}
+		catch (std::exception& e)
+		{
+			std::cout << "Error: " << e.what() << std::endl;
+			return nullptr;
+		}
+	}
+	else
+	{
+		std::cout << "Error: The graph is null, can not add edge" << std::endl;
+		return nullptr;
+	}
+}
+
+void disp(graph* graph)
+{
+	if (graph != nullptr)
+	{
+		try {
+			graph::printGraph(*graph);
+		}
+		catch (std::exception& e)
+		{
+			std::cout << "Error: " << e.what() << std::endl;
+		}
+	}
+	else
+	{
+		std::cout << "Error: The graph is null, can not print" << std::endl;
+	}
+}
+
+graph* graphUnion(graph* graph_in1, graph* graph_in2, graph* graph_out)
+{
+	if (graph_in1 != nullptr && graph_in2 != nullptr && graph_out != nullptr)
+	{
+		try {
+			graph result = graph::unite(*graph_in1, *graph_in2);
+			*graph_out = result;
+			return graph_out;
+		}
+		catch (std::exception& e)
+		{
+			std::cout << "Error: " << e.what() << std::endl;
+			return graph_out;
+		}
+	}
+	else
+	{
+		std::cout << "Error: Passed null graph, can not unite" << std::endl;
+		return graph_out;
+	}
+}
+
+graph* graphIntersection(graph* graph_in1, graph* graph_in2, graph* graph_out)
+{
+	if (graph_in1 != nullptr && graph_in2 != nullptr && graph_out != nullptr)
+	{
+		try {
+			graph result = graph::intersect(*graph_in1, *graph_in2);
+			*graph_out = result;
+			return graph_out;
+		}
+		catch (std::exception& e)
+		{
+			std::cout << "Error: " << e.what() << std::endl;
+			return graph_out;
+		}
+	}
+	else
+	{
+		std::cout << "Error: Passed null graph, can not intersect" << std::endl;
+		return graph_out;
+	}
+}
+
+graph* graphDifference(graph* graph_in1, graph* graph_in2, graph* graph_out)
+{
+	if (graph_in1 != nullptr && graph_in2 != nullptr && graph_out != nullptr)
+	{
+		try {
+			graph result = graph::diff(*graph_in1, *graph_in2);
+			*graph_out = result;
+			return graph_out;
+		}
+		catch (std::exception& e)
+		{
+			std::cout << "Error: " << e.what() << std::endl;
+			return graph_out;
+		}
+	}
+	else
+	{
+		std::cout << "Error: Passed null graph, can not difference" << std::endl;
+		return graph_out;
+	}
+}
+
+graph* graphProduct(graph* graph_in1, graph* graph_in2, graph* graph_out)
+{
+	if (graph_in1 != nullptr && graph_in2 != nullptr && graph_out != nullptr)
+	{
+		try {
+			graph result = graph::cross(*graph_in1, *graph_in2);
+			*graph_out = result;
+			return graph_out;
+		}
+		catch (std::exception& e)
+		{
+			std::cout << "Error: " << e.what() << std::endl;
+			return graph_out;
+		}
+	}
+	else
+	{
+		std::cout << "Error: Passed null graph, can not product" << std::endl;
+		return graph_out;
+	}
+}
+
+graph* graphComplement(graph* graph_in, graph* graph_out)
+{
+	if (graph_in != nullptr && graph_out != nullptr)
+	{
+		try {
+			graph result = graph::complement(*graph_in);
+			*graph_out = result;
+			return graph_out;
+		}
+		catch (std::exception& e)
+		{
+			std::cout << "Error: " << e.what() << std::endl;
+			return graph_out;
+		}
+	}
+	else
+	{
+		std::cout << "Error: Passed null graph, can not complement" << std::endl;
+		return graph_out;
+	}
+}
+
 /*graph* create()
 {
 	try
