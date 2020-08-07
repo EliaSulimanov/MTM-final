@@ -5,6 +5,9 @@ SOBJS = graph.o graphHelper.o
 EXEC = gcalc
 DEBUG_FLAG = -g
 COMP_FLAG = -std=c++11 --pedantic-errors -Wall -Werror -fPIC
+FNAM = gcalc.zip
+UTILF = design.pdf Makefile test_in.txt test_out.txt
+FILIST = gcalc.cpp graph.cpp graph.h graphHelper.cpp graphHelper.h graphException.h 
 
 $(EXEC): $(OBJS)
 	$(CXX) $(DEBUG_FLAG) $(OBJS) -o $@
@@ -20,6 +23,9 @@ graphHelper.o: graphHelper.cpp graphHelper.h graph.h graphException.h
 
 libgraph.a: $(SOBJS)
 	ar -rs $@ $^
+
+tar:
+	zip $(FNAM) $(UTILF) $(FILIST)
 
 clean:
 	rm -f $(OBJS) $(EXEC)
