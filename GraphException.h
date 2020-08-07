@@ -6,24 +6,24 @@
 
 namespace gcalc 
 {
-	class GraphException : public std::exception
+	class graphException : public std::exception
 	{
 	private:
 		std::string message;
 	public:
-		GraphException(std::string message) noexcept : message(message) {}
+		graphException(std::string message) noexcept : message(message) {}
 		virtual const char* what() const noexcept override
 		{
 			return message.c_str();
 		}
 	};
 
-	class FatalGraphException : public std::exception
+	class FatalgraphException : public std::exception
 	{
 	private:
 		std::string message;
 	public:
-		FatalGraphException(std::string message) noexcept : message(message) {}
+		FatalgraphException(std::string message) noexcept : message(message) {}
 		virtual const char* what() const noexcept override
 		{
 			return message.c_str();

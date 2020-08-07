@@ -7,32 +7,27 @@
 
 namespace gcalc
 {
-	class Graph
+	class graph
 	{
 	private:
 		std::set<std::string> vertex_set;
 		std::set<std::vector<std::string> > edge_set;
 	public:
-		Graph();
-		Graph(const Graph& rhg);
-		~Graph() = default;
-		Graph& operator=(const Graph& rhg);
+		graph();
+		graph(const graph& rhg);
+		//~graph() = default;
+		graph& operator=(const graph& rhg);
 		void insertVertex(std::string vertex);
 		void insertEdge(std::string src, std::string dest);
-		std::vector<std::pair<size_t, std::string>> flatGraph();
-		friend Graph unite(const Graph& lhg, const Graph& rhg);
-		friend Graph intersect(const Graph& lhg, const Graph& rhg);
-		friend Graph diff(const Graph& lhg, const Graph& rhg);
-		friend Graph cross(const Graph& lhg, const Graph& rhg);
-		friend Graph complement(const Graph& grap);
-		friend void print(const Graph& grap);
+		std::vector<std::pair<size_t, std::string> > flatgraph();
+		static graph unite(const graph& lhg, const graph& rhg);
+		static graph intersect(const graph& lhg, const graph& rhg);
+		static graph diff(const graph& lhg, const graph& rhg);
+		static graph cross(const graph& lhg, const graph& rhg);
+		static graph complement(const graph& grap);
+		static void printGraph(const graph& grap);
 	};
-	Graph unite(const Graph& lhg, const Graph& rhg);
-	Graph intersect(const Graph& lhg, const Graph& rhg);
-	Graph diff(const Graph& lhg, const Graph& rhg);
-	Graph cross(const Graph& lhg, const Graph& rhg);
-	Graph complement(const Graph& grap);
-	void print(const Graph& grap);
+	
 }
 #endif
 

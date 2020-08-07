@@ -1,33 +1,33 @@
-#include "Graph.h"
-#include "GraphHelper.h"
-#include "GraphException.h"
+#include "graph.h"
+#include "graphHelper.h"
+#include "graphException.h"
 
-gcalc::Graph::Graph()
+gcalc::graph::graph()
 {
 	vertex_set.clear();
 	edge_set.clear();
 }
 
-gcalc::Graph::Graph(const Graph& rhg)
+gcalc::graph::graph(const graph& rhg)
 {
 	this->vertex_set = rhg.vertex_set;
 	this->edge_set = rhg.edge_set;
 }
 
-gcalc::Graph& gcalc::Graph::operator=(const Graph& rhg)
+gcalc::graph& gcalc::graph::operator=(const graph& rhg)
 {
 	this->vertex_set = rhg.vertex_set;
 	this->edge_set = rhg.edge_set;
 	return *this;
 }
 
-void gcalc::Graph::insertVertex(std::string vertex)
+void gcalc::graph::insertVertex(std::string vertex)
 {
-	if (gcalc::GraphHelper::vertexNameCheck(vertex))
+	if (gcalc::graphHelper::vertexNameCheck(vertex))
 	{
 		if (this->vertex_set.find(vertex) != this->vertex_set.end()) // vertex already exists
 		{
-			throw gcalc::GraphException("Invalid graph syntax - vertex already exists");
+			throw gcalc::graphException("Invalid graph syntax - vertex already exists");
 		}
 		else 
 		{
@@ -36,24 +36,24 @@ void gcalc::Graph::insertVertex(std::string vertex)
 	}
 }
 
-void gcalc::Graph::insertEdge(std::string src, std::string dest)
+void gcalc::graph::insertEdge(std::string src, std::string dest)
 {
-	if (gcalc::GraphHelper::vertexNameCheck(src) && gcalc::GraphHelper::vertexNameCheck(dest))
+	if (gcalc::graphHelper::vertexNameCheck(src) && gcalc::graphHelper::vertexNameCheck(dest))
 	{
 		if (src.compare(dest) == 0) // self loop
 		{
-			throw gcalc::GraphException("Invalid graph syntax - self loop edge not allowed");
+			throw gcalc::graphException("Invalid graph syntax - self loop edge not allowed");
 		}
 		else if (this->vertex_set.find(src) == this->vertex_set.end() || this->vertex_set.find(dest) == this->vertex_set.end()) // vertex not exist
 		{
-			throw gcalc::GraphException("Invalid graph syntax - edge vertex not exist");
+			throw gcalc::graphException("Invalid graph syntax - edge vertex not exist");
 		}
 		else
 		{
 			std::vector<std::string> temp {src, dest};
 			if (this->edge_set.find(temp) != this->edge_set.end()) // edge exist
 			{
-				throw gcalc::GraphException("Invalid graph syntax - edge already exist");
+				throw gcalc::graphException("Invalid graph syntax - edge already exist");
 			}
 			else
 			{
@@ -63,9 +63,9 @@ void gcalc::Graph::insertEdge(std::string src, std::string dest)
 	}
 }
 
-std::vector<std::pair<size_t, std::string>> gcalc::Graph::flatGraph()
+std::vector<std::pair<size_t, std::string> > gcalc::graph::flatgraph()
 {
-	std::vector<std::pair<size_t, std::string>> flat_graph;
+	std::vector<std::pair<size_t, std::string> > flat_graph;
 
 	flat_graph.push_back(std::pair<size_t, std::string>(vertex_set.size(), ""));
 	flat_graph.push_back(std::pair<size_t, std::string>(edge_set.size(), ""));
@@ -84,18 +84,18 @@ std::vector<std::pair<size_t, std::string>> gcalc::Graph::flatGraph()
 	return flat_graph;
 }
 
-gcalc::Graph gcalc::unite(const Graph& lhg, const Graph& rhg)
+gcalc::graph gcalc::unite(const graph& lhg, const graph& rhg)
 {
-	gcalc::Graph result(lhg);
+	gcalc::graph result(lhg);
 	result.vertex_set.insert(rhg.vertex_set.begin(), rhg.vertex_set.end()); 
 	result.edge_set.insert(rhg.edge_set.begin(), rhg.edge_set.end()); // TODO: check if this works as expected
 
 	return result;
 }
 
-gcalc::Graph gcalc::intersect(const Graph& lhg, const Graph& rhg)
+gcalc::graph gcalc::intersect(const graph& lhg, const graph& rhg)
 {
-	gcalc::Graph result;
+	gcalc::graph result;
 	for (auto vertex : lhg.vertex_set)
 	{
 		if (rhg.vertex_set.find(vertex) != rhg.vertex_set.end()) // exists in both
@@ -115,9 +115,9 @@ gcalc::Graph gcalc::intersect(const Graph& lhg, const Graph& rhg)
 	return result;
 }
 
-gcalc::Graph gcalc::diff(const Graph& lhg, const Graph& rhg)
+gcalc::graph gcalc::diff(const graph& lhg, const graph& rhg)
 {
-	gcalc::Graph result;
+	gcalc::graph result;
 	for (auto vertex : lhg.vertex_set)
 	{
 		if (rhg.vertex_set.find(vertex) == rhg.vertex_set.end()) // exists on left graph but not on right
@@ -138,9 +138,9 @@ gcalc::Graph gcalc::diff(const Graph& lhg, const Graph& rhg)
 	return result;
 }
 
-gcalc::Graph gcalc::cross(const Graph& lhg, const Graph& rhg)
+gcalc::graph gcalc::cross(const graph& lhg, const graph& rhg)
 {
-	gcalc::Graph result; // TODO: test this. Not sure about the product
+	gcalc::graph result; // TODO: test this. Not sure about the product
 
 	for (auto left_v : lhg.vertex_set)
 	{
@@ -161,9 +161,9 @@ gcalc::Graph gcalc::cross(const Graph& lhg, const Graph& rhg)
 	return result;
 }
 
-gcalc::Graph gcalc::complement(const Graph& grap)
+gcalc::graph gcalc::complement(const graph& grap)
 {
-	gcalc::Graph result; // TODO: check on complex graphs
+	gcalc::graph result; // TODO: check on complex graphs
 	result.vertex_set = grap.vertex_set; // TODO: check if it alloc new memory for this or use the same
 	for (auto left_v : grap.vertex_set) 
 	{
@@ -191,7 +191,7 @@ gcalc::Graph gcalc::complement(const Graph& grap)
 	return result;
 }
 
-void gcalc::print(const Graph& grap)
+void gcalc::printGraph(const graph& grap)
 {
 	for (auto vertex : grap.vertex_set)
 	{
