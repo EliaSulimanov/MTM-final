@@ -220,6 +220,20 @@ graph* create()
 	}
 }
 
+/*graph* create()
+{
+	try
+	{
+		graph* return_graph = new graph();
+		return return_graph;
+	}
+	catch (std::exception&)
+	{
+		std::cout << "Error: error occurred while creating new graph" << std::endl;
+		return nullptr;
+	}
+}
+
 void destroy(graph* graph)
 {
 	if (graph != nullptr)
@@ -396,4 +410,4 @@ graph* graphComplement(graph* graph_in, graph* graph_out)
 		std::cout << "Error: Passed null graph, can not complement" << std::endl;
 		return graph_out;
 	}
-}
+}*/

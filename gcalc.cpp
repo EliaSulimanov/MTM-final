@@ -9,12 +9,12 @@
 #include <memory>
 #include <algorithm>
 
-void gcalcLoop(std::map<std::string, std::shared_ptr<gcalc::graph>>& symbol_map);
-void gcalcLoop(std::map<std::string, std::shared_ptr<gcalc::graph>>& symbol_map, char* argv[]);
-void deletegraph(std::map<std::string, std::shared_ptr<gcalc::graph>>& symbol_map, std::string graphName);
-void eval(std::map<std::string, std::shared_ptr<gcalc::graph>>& symbol_map, std::vector<std::string> command, std::string real_command);
+void gcalcLoop(std::map<std::string, std::shared_ptr<graph>>& symbol_map);
+void gcalcLoop(std::map<std::string, std::shared_ptr<graph>>& symbol_map, char* argv[]);
+void deletegraph(std::map<std::string, std::shared_ptr<graph>>& symbol_map, std::string graphName);
+void eval(std::map<std::string, std::shared_ptr<graph>>& symbol_map, std::vector<std::string> command, std::string real_command);
 
-void gcalcLoop(std::map<std::string, std::shared_ptr<gcalc::graph>>& symbol_map) {
+void gcalcLoop(std::map<std::string, std::shared_ptr<graph>>& symbol_map) {
 	while (true)
 	{
 		try
@@ -23,7 +23,7 @@ void gcalcLoop(std::map<std::string, std::shared_ptr<gcalc::graph>>& symbol_map)
 
 			std::cout << "Gcalc> ";
 			std::getline(std::cin, command);
-			std::vector<std::string> split_command = gcalc::graphHelper::splitCommand(command);
+			std::vector<std::string> split_command = graphHelper::splitCommand(command);
 
  			if (split_command.size() == 0)
  			{
@@ -62,7 +62,7 @@ void gcalcLoop(std::map<std::string, std::shared_ptr<gcalc::graph>>& symbol_map)
 				eval(symbol_map, split_command, command);
 			}
 		}
-		catch (gcalc::FatalgraphException& e)
+		catch (FatalgraphException& e)
 		{
 			std::cerr << "Fatal Error: " << e.what() << std::endl;
 			return; // TODO: maybe just break...
@@ -74,7 +74,7 @@ void gcalcLoop(std::map<std::string, std::shared_ptr<gcalc::graph>>& symbol_map)
 	}
 }
 
-void gcalcLoop(std::map<std::string, std::shared_ptr<gcalc::graph>>& symbol_map, char* argv[])
+void gcalcLoop(std::map<std::string, std::shared_ptr<graph>>& symbol_map, char* argv[])
 {
 	std::string command;
 
@@ -98,7 +98,7 @@ void gcalcLoop(std::map<std::string, std::shared_ptr<gcalc::graph>>& symbol_map,
 			{
 				try
 				{
-					std::vector<std::string> split_command = gcalc::graphHelper::splitCommand(command);
+					std::vector<std::string> split_command = graphHelper::splitCommand(command);
 					if (split_command.size() == 0)
 					{
 						if (std::cin.eof())
@@ -136,7 +136,7 @@ void gcalcLoop(std::map<std::string, std::shared_ptr<gcalc::graph>>& symbol_map,
 						eval(symbol_map, split_command, command);
 					}
 				}
-				catch (gcalc::FatalgraphException& e)
+				catch (FatalgraphException& e)
 				{
 					std::cerr << "Fatal Error: " << e.what() << std::endl;
 					return; // TODO: maybe just break...
@@ -169,7 +169,7 @@ void gcalcLoop(std::map<std::string, std::shared_ptr<gcalc::graph>>& symbol_map,
 	}
 }
 
-void deletegraph(std::map<std::string, std::shared_ptr<gcalc::graph>>& symbol_map, std::string graphName) 
+void deletegraph(std::map<std::string, std::shared_ptr<graph>>& symbol_map, std::string graphName) 
 {
 	try
 	{
@@ -179,29 +179,29 @@ void deletegraph(std::map<std::string, std::shared_ptr<gcalc::graph>>& symbol_ma
 	{}
 }
 
-void eval(std::map<std::string, std::shared_ptr<gcalc::graph>>& symbol_map, std::vector<std::string> command, std::string real_command)
+void eval(std::map<std::string, std::shared_ptr<graph>>& symbol_map, std::vector<std::string> command, std::string real_command)
 {
-	if (gcalc::graphHelper::checkNoDuplicateCommands(command)) // TODO: see if this is a good check
+	if (graphHelper::checkNoDuplicateCommands(command)) // TODO: see if this is a good check
 	{
 		if (command[0].compare("print") == 0)
 		{
 			if (command[1].compare("(") != 0)
 			{
-				throw gcalc::graphException("Invalid syntax");
+				throw graphException("Invalid syntax");
 			}
 			if (command[1].compare("(") == 0 && command[command.size() - 1].compare(")") != 0)
 			{
-				throw gcalc::graphException("Invalid syntax");
+				throw graphException("Invalid syntax");
 			}
 			if (command.size() == 4) // The argument is graph name
 			{
 				if (symbol_map.find(command[2]) != symbol_map.end())
 				{
-					gcalc::printGraph(*(symbol_map.at(command[2])));
+					graph::printGraph(*(symbol_map.at(command[2])));
 				}
 				else
 				{
-					throw gcalc::graphException("Undefined variable");
+					throw graphException("Undefined variable");
 				}
 			}
 			else // The argument is complex graph def
@@ -209,18 +209,18 @@ void eval(std::map<std::string, std::shared_ptr<gcalc::graph>>& symbol_map, std:
 				auto graph_start = command.begin() + 2;
 				std::vector<std::string> temp_vector(graph_start, command.end());
 				temp_vector.pop_back();
-				gcalc::printGraph(*(gcalc::graphHelper::commandOperation(symbol_map, temp_vector, real_command)));
+				graph::printGraph(*(graphHelper::commandOperation(symbol_map, temp_vector, real_command)));
 			}
 		}
 		else if (command[0].compare("delete") == 0) // Delete can only work on existing graph.
 		{
 			if (command[1].compare("(") != 0 || command.size() != 4)
 			{
-				throw gcalc::graphException("Invalid syntax");
+				throw graphException("Invalid syntax");
 			}
 			if (command[1].compare("(") == 0 && command[command.size() - 1].compare(")") != 0)
 			{
-				throw gcalc::graphException("Invalid syntax");
+				throw graphException("Invalid syntax");
 			}
 			deletegraph(symbol_map, command[2]);
 		}
@@ -228,11 +228,11 @@ void eval(std::map<std::string, std::shared_ptr<gcalc::graph>>& symbol_map, std:
 		{
 			if (command[1].compare("(") != 0)
 			{
-				throw gcalc::graphException("Invalid syntax, missing starting parentheses on save command");
+				throw graphException("Invalid syntax, missing starting parentheses on save command");
 			}
 			if (command[1].compare("(") == 0 && command[command.size() - 1].compare(")") != 0)
 			{
-				throw gcalc::graphException("Invalid syntax, missing ending parentheses on save command");
+				throw graphException("Invalid syntax, missing ending parentheses on save command");
 			}
 
 			auto command_start = command.begin() + 2;
@@ -242,20 +242,20 @@ void eval(std::map<std::string, std::shared_ptr<gcalc::graph>>& symbol_map, std:
 			auto last_comma = std::find(temp_vector.rbegin(), temp_vector.rend(), ",");
 			if (last_comma == temp_vector.rend())
 			{
-				throw gcalc::graphException("Invalid syntax, missing filename or graph in save command");
+				throw graphException("Invalid syntax, missing filename or graph in save command");
 			}
 
 			std::vector<std::string> filename(last_comma.base(), temp_vector.end()); // TODO: check the slicing
 			//filename.pop_back();
-			if (gcalc::graphHelper::checkFileName(filename))
+			if (graphHelper::checkFileName(filename))
 			{
 				std::vector<std::string> temp_graph_command(temp_vector.begin(), last_comma.base() - 1); // TODO: check the slicing
-				gcalc::graph temp_graph = *(gcalc::graphHelper::commandOperation(symbol_map, temp_graph_command, real_command));
+				graph temp_graph = *(graphHelper::commandOperation(symbol_map, temp_graph_command, real_command));
 
 				size_t last_comma_index = real_command.find_last_of(",");
 				auto file_path = real_command.substr(last_comma_index + 1); // TODO: check the slicing
 				file_path.erase(std::find(file_path.begin(), file_path.end(), ')'), file_path.end());
-				gcalc::graphHelper::clearWhiteSpaces(file_path);
+				graphHelper::clearWhiteSpaces(file_path);
 
 				try
 				{
@@ -266,7 +266,7 @@ void eval(std::map<std::string, std::shared_ptr<gcalc::graph>>& symbol_map, std:
 					{
 						if (flat_g.size() < 2)
 						{
-							throw gcalc::graphException("Error while saving graph to file");
+							throw graphException("Error while saving graph to file");
 						}
 						for (size_t i = 0; i < flat_g.size(); i++)
 						{
@@ -280,26 +280,26 @@ void eval(std::map<std::string, std::shared_ptr<gcalc::graph>>& symbol_map, std:
 					}
 					else
 					{
-						throw gcalc::graphException("Error occurred while saving the graph to the file: " + file_path);
+						throw graphException("Error occurred while saving the graph to the file: " + file_path);
 					}
 					if (fd.bad())
 					{
-						throw gcalc::graphException("Error occurred while saving the graph to the file: " + file_path);
+						throw graphException("Error occurred while saving the graph to the file: " + file_path);
 					}
 				}
 				catch (const std::exception&)
 				{
-					throw gcalc::graphException("Error occurred while saving the graph to the file: " + file_path);
+					throw graphException("Error occurred while saving the graph to the file: " + file_path);
 				}
 			}
 		}
 		else // assignment
 		{
-			if (gcalc::graphHelper::checkgraphName(command[0]))
+			if (graphHelper::checkgraphName(command[0]))
 			{
 				if (command[1].compare("=") != 0)
 				{
-					throw gcalc::graphException("Unrecognized command");
+					throw graphException("Unrecognized command");
 				}
 				else
 				{
@@ -309,12 +309,12 @@ void eval(std::map<std::string, std::shared_ptr<gcalc::graph>>& symbol_map, std:
 					auto symbol_map_iter = symbol_map.find(command[0]);
 					if (symbol_map_iter != symbol_map.end())
 					{
-						std::shared_ptr<gcalc::graph> temp_graph = gcalc::graphHelper::commandOperation(symbol_map, temp_vector, real_command);
+						std::shared_ptr<graph> temp_graph = graphHelper::commandOperation(symbol_map, temp_vector, real_command);
 						symbol_map_iter->second = temp_graph;
 					}
 					else
 					{
-						symbol_map.insert(std::pair<std::string, std::shared_ptr<gcalc::graph>>(command[0], gcalc::graphHelper::commandOperation(symbol_map, temp_vector, real_command)));
+						symbol_map.insert(std::pair<std::string, std::shared_ptr<graph>>(command[0], graphHelper::commandOperation(symbol_map, temp_vector, real_command)));
 					}
 				}
 			}
@@ -323,7 +323,7 @@ void eval(std::map<std::string, std::shared_ptr<gcalc::graph>>& symbol_map, std:
 }
 
 int main(int argc, char* argv[]) {
-	std::map<std::string, std::shared_ptr<gcalc::graph>> symbol_map;
+	std::map<std::string, std::shared_ptr<graph>> symbol_map;
 	if (argc == 1)
 	{
 		gcalcLoop(symbol_map);
