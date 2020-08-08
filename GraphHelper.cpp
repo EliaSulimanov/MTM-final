@@ -206,6 +206,13 @@ bool graphHelper::checkgraphSyntax(std::vector<std::string> command)
 				}
 				throw graphException("Invalid graph syntax");
 			}
+			if (vertex_side_iter + 1 != command.end()) // TODO: NEW TEST
+			{
+				if ((*(vertex_side_iter + 1)).compare("|") == 0)
+				{
+					throw graphException("Invalid graph syntax, missing vertex definition");
+				}
+			}
 			alt_sign = false;
 		}
 		else // Should be a word
