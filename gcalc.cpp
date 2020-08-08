@@ -138,7 +138,7 @@ void gcalcLoop(std::map<std::string, std::shared_ptr<graph>>& symbol_map, char* 
 				}
 				catch (FatalgraphException& e)
 				{
-					std::cout << "Error: " << e.what() << std::endl;
+					std::cerr << "Error: " << e.what() << std::endl;
 					return;
 				}
 				catch (std::exception& e)
