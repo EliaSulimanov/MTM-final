@@ -16,6 +16,9 @@ gw.addEdge(graph2, 'v2','v3')
 gw.disp(graph2)
 
 graph3 = gw.create()
-graph4 = gw.graphUnion(graph1, graph2, graph3)
-gw.disp(graph4)
+graph3 = gw.graphUnion(graph1, graph2, graph3)
 gw.disp(graph3)
+
+gw.destroy(graph1)
+gw.destroy(graph2)
+gw.destroy(graph3)
