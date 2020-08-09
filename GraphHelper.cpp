@@ -571,12 +571,7 @@ std::shared_ptr<graph> graphHelper::commandOperation(std::map<std::string, std::
 		throw graphException("Empty command");
 	}
 
-	if (command[0].compare("(") == 0 && command[command.size() - 1].compare(")") == 0) 
-	{
-		command.pop_back();
-		command.erase(command.begin());
-		return graphHelper::commandOperation(symbol_map, command, real_command);
-	}
+	// TODO: 603 was here, moved down
 
 	std::stack<std::string> brackets_stack;
 	
@@ -605,6 +600,14 @@ std::shared_ptr<graph> graphHelper::commandOperation(std::map<std::string, std::
 			}
 		}
 	}
+
+	if (command[0].compare("(") == 0 && command[command.size() - 1].compare(")") == 0)
+	{
+		command.pop_back();
+		command.erase(command.begin());
+		return graphHelper::commandOperation(symbol_map, command, real_command);
+	}
+
 
 	if (command[0].compare("!") == 0) 
 	{

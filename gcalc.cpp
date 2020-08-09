@@ -177,7 +177,9 @@ void deletegraph(std::map<std::string, std::shared_ptr<graph>>& symbol_map, std:
 		symbol_map.erase(graphName); 
 	}
 	catch (std::exception)
-	{}
+	{
+		throw graphException("Graph not exist");
+	}
 }
 
 void eval(std::map<std::string, std::shared_ptr<graph>>& symbol_map, std::vector<std::string> command, std::string real_command)
