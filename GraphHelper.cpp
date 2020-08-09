@@ -170,7 +170,7 @@ bool graphHelper::checkNoDuplicateCommands(std::vector<std::string> command)
 	if ((num_of_print == 1 && (num_of_delete > 0 || num_of_equal > 0 || num_of_save > 0)) ||
 		(num_of_delete == 1 && (num_of_print > 0 || num_of_equal > 0 || num_of_save > 0)) ||
 		(num_of_equal == 1 && (num_of_delete > 0 || num_of_print > 0 || num_of_save > 0)) ||
-		(num_of_save == 1) && (num_of_delete > 0 || num_of_equal > 0 || num_of_print > 0)) // New addition
+		(num_of_save == 1 && (num_of_delete > 0 || num_of_equal > 0 || num_of_print > 0))) // New addition
 	{
 		throw graphException("Invalid syntax, only one command per line allowed");
 
