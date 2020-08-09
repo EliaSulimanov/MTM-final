@@ -273,7 +273,7 @@ void eval(std::map<std::string, std::shared_ptr<graph>>& symbol_map, std::vector
 						}
 						for (size_t i = 0; i < flat_g.size(); i++)
 						{
-							fd.write((char*)&flat_g[i].first, sizeof(size_t));
+							fd.write((char*)&flat_g[i].first, sizeof(int)); // TODO: changed size_t to int
 							for (auto ch : flat_g[i].second)
 							{
 								fd.write(&ch, sizeof(char));
