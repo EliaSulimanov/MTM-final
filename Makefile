@@ -28,4 +28,4 @@ tar:
 	zip $(FNAM) $(UTILF) $(FILIST)
 
 clean:
-	rm -f $(OBJS) $(EXEC)
+	rm -f $(OBJS) $(EXEC) libgraph.a
