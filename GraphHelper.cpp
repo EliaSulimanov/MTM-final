@@ -125,35 +125,47 @@ bool graphHelper::checkNoDuplicateCommands(std::vector<std::string> command)
 	int num_of_quit = 0;
 	int num_of_reset = 0;
 	int num_of_save = 0;
+	bool inside_graph = false;
 	for (auto word : command)
 	{
-		if (word.compare("print") == 0)
+		if (word.compare("{") == 0)
 		{
-			num_of_print++;
+			inside_graph = true;
 		}
-		else if (word.compare("delete") == 0)
+		if (word.compare("}") == 0)
 		{
-			num_of_delete++;
+			inside_graph = false;
 		}
 		else if (word.compare("=") == 0)
 		{
 			num_of_equal++;
 		}
-		else if (word.compare("who") == 0)
+		if (!inside_graph)
 		{
-			num_of_who++;
-		}
-		else if (word.compare("quit") == 0)
-		{
-			num_of_quit++;
-		}
-		else if (word.compare("reset") == 0)
-		{
-			num_of_reset++;
-		}
-		else if (word.compare("save") == 0)
-		{
-			num_of_save++;
+			if (word.compare("print") == 0)
+			{
+				num_of_print++;
+			}
+			else if (word.compare("delete") == 0)
+			{
+				num_of_delete++;
+			}
+			else if (word.compare("who") == 0)
+			{
+				num_of_who++;
+			}
+			else if (word.compare("quit") == 0)
+			{
+				num_of_quit++;
+			}
+			else if (word.compare("reset") == 0)
+			{
+				num_of_reset++;
+			}
+			else if (word.compare("save") == 0)
+			{
+				num_of_save++;
+			}
 		}
 	}
 
@@ -664,7 +676,7 @@ std::shared_ptr<graph> graphHelper::commandOperation(std::map<std::string, std::
 			}
 			return loadgraph(symbol_map, command, real_command);
 		}
-		throw graphException("Undefined variable");
+		throw graphException("Undefined variable: " + command[0]);
 	}
 
 	return symbol_map.at(command[0]);
