@@ -65,7 +65,7 @@ void gcalcLoop(std::map<std::string, std::shared_ptr<graph>>& symbol_map) {
 		catch (FatalgraphException& e)
 		{
 			std::cerr << "Error: " << e.what() << std::endl;
-			return; // TODO: maybe just break...
+			return;
 		}
 		catch (std::exception& e)
 		{
@@ -92,11 +92,11 @@ void gcalcLoop(std::map<std::string, std::shared_ptr<graph>>& symbol_map, char* 
 			backup_in_stream = std::cin.rdbuf();
 			backup_out_stream = std::cout.rdbuf();
 
-			std::cin.rdbuf(ifs.rdbuf()); //TODO: disabled for debug
+			std::cin.rdbuf(ifs.rdbuf());
 			std::cout.rdbuf(ofs.rdbuf());
 			while (run && getline(ifs, command))
 			{
-				//std::cout << "Command: " << command << std::endl; // TODO: NEW FOR DEBUGING
+				
 				try
 				{
 					std::vector<std::string> split_command = graphHelper::splitCommand(command);
@@ -174,7 +174,7 @@ void deletegraph(std::map<std::string, std::shared_ptr<graph>>& symbol_map, std:
 {
 	try
 	{
-		symbol_map.erase(graphName); // TODO: check for memory leaks
+		symbol_map.erase(graphName); 
 	}
 	catch (std::exception)
 	{}
@@ -182,7 +182,7 @@ void deletegraph(std::map<std::string, std::shared_ptr<graph>>& symbol_map, std:
 
 void eval(std::map<std::string, std::shared_ptr<graph>>& symbol_map, std::vector<std::string> command, std::string real_command)
 {
-	if (graphHelper::checkNoDuplicateCommands(command)) // TODO: see if this is a good check
+	if (graphHelper::checkNoDuplicateCommands(command))
 	{
 		if (command[0].compare("print") == 0)
 		{
@@ -202,7 +202,7 @@ void eval(std::map<std::string, std::shared_ptr<graph>>& symbol_map, std::vector
 				}
 				else
 				{
-					throw graphException("Undefined variable: " + command[2]); // TODO: fix this throw, changed for debug
+					throw graphException("Undefined variable: " + command[2]);
 				}
 			}
 			else // The argument is complex graph def
@@ -246,15 +246,15 @@ void eval(std::map<std::string, std::shared_ptr<graph>>& symbol_map, std::vector
 				throw graphException("Invalid syntax, missing filename or graph in save command");
 			}
 
-			std::vector<std::string> filename(last_comma.base(), temp_vector.end()); // TODO: check the slicing
-			//filename.pop_back();
+			std::vector<std::string> filename(last_comma.base(), temp_vector.end());
+			
 			if (graphHelper::checkFileName(filename))
 			{
-				std::vector<std::string> temp_graph_command(temp_vector.begin(), last_comma.base() - 1); // TODO: check the slicing
+				std::vector<std::string> temp_graph_command(temp_vector.begin(), last_comma.base() - 1);
 				graph temp_graph = *(graphHelper::commandOperation(symbol_map, temp_graph_command, real_command));
 
 				size_t last_comma_index = real_command.find_last_of(",");
-				auto file_path = real_command.substr(last_comma_index + 1); // TODO: check the slicing
+				auto file_path = real_command.substr(last_comma_index + 1);
 				file_path.erase(std::find(file_path.begin(), file_path.end(), ')'), file_path.end());
 				graphHelper::clearWhiteSpaces(file_path);
 

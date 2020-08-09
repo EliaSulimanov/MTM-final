@@ -51,9 +51,16 @@ size_t graphHelper::findNextTokenPos(std::string command) {
 	for (; i < command.size(); i++)
 	{
 		ch = command[i];
-		if (special_chars.find(std::string(1, ch)) != special_chars.end()) // TODO: add catch for bad_alloc and throw fatal exception
+		try
 		{
-			return i;
+			if (special_chars.find(std::string(1, ch)) != special_chars.end()) 
+			{
+				return i;
+			}
+		}
+		catch (const std::exception&)
+		{
+			throw FatalgraphException("Fatal error- out of memory");
 		}
 	}
 	return i;
@@ -206,7 +213,7 @@ bool graphHelper::checkgraphSyntax(std::vector<std::string> command)
 				}
 				throw graphException("Invalid graph syntax");
 			}
-			if (vertex_side_iter + 1 != command.end()) // TODO: NEW TEST
+			if (vertex_side_iter + 1 != command.end()) 
 			{
 				if ((*(vertex_side_iter + 1)).compare("|") == 0)
 				{
@@ -316,7 +323,7 @@ std::shared_ptr<graph> graphHelper::commandTograph(std::map<std::string, std::sh
 		if (symbol_map.find(command[0]) == symbol_map.end())
 		{
 			throw graphException("Undefined variable: " + command[0]);
-			//throw graphException("Undefined variable 319 gcalcHelper: " + command[0]); // TODO: fix this throw, changed for debug
+			
 		}
 		else
 		{	
@@ -374,7 +381,7 @@ std::shared_ptr<graph> graphHelper::commandTograph(std::map<std::string, std::sh
 			}
 			else
 			{
-				if (command[i].compare(",") == 0) // TODO: add check for it.
+				if (command[i].compare(",") == 0) 
 				{
 					i++;
 					continue;
@@ -564,7 +571,7 @@ std::shared_ptr<graph> graphHelper::commandOperation(std::map<std::string, std::
 		throw graphException("Empty command");
 	}
 
-	if (command[0].compare("(") == 0 && command[command.size() - 1].compare(")") == 0) // TODO: NEW TEST
+	if (command[0].compare("(") == 0 && command[command.size() - 1].compare(")") == 0) 
 	{
 		command.pop_back();
 		command.erase(command.begin());
@@ -594,24 +601,16 @@ std::shared_ptr<graph> graphHelper::commandOperation(std::map<std::string, std::
 				std::vector<std::string> left_v(command.begin(), iter.base() - 1);
 				std::string op = (*iter);
 				std::vector<std::string> right_v(iter.base(), command.end());
-				return graphHelper::evaluateBinaryOperation(symbol_map, left_v, right_v, op, real_command); //TODO: check if slice went well
+				return graphHelper::evaluateBinaryOperation(symbol_map, left_v, right_v, op, real_command); 
 			}
 		}
 	}
 
-	if (command[0].compare("!") == 0) // TODO check it out
+	if (command[0].compare("!") == 0) 
 	{
 		command.erase(command.begin());
 		return std::shared_ptr<graph>(new graph(graph::complement(*(commandOperation(symbol_map, command, real_command)))));
 	}
-	
-	// TODO: for debugging, should remove after 4.2
-// 	std::cout << "command[0]: " << command[0] << ", command[command.size() - 1]: " << command[command.size() - 1] << std::endl;
-// 	for (size_t i = 0; i < command.size(); i++)
-// 	{
-// 		std::cout << "command[" << i << "]: " << command[i] << std::endl;
-// 	}
-	// -------------------------------------------------------------------------------------------------------------------
 
 	if (command[0].compare("{") == 0 && command[command.size() - 1].compare("}") == 0)
 	{
@@ -629,7 +628,6 @@ std::shared_ptr<graph> graphHelper::commandOperation(std::map<std::string, std::
 			return loadgraph(symbol_map, command, real_command);
 		}
 		throw graphException("Undefined variable");
-		//throw graphException("Undefined variable 623 gcalcHelper: " + command[0]); // TODO: fix this throw, changed for debug
 	}
 
 	return symbol_map.at(command[0]);
@@ -703,8 +701,8 @@ std::shared_ptr<graph> graphHelper::loadgraph(std::map<std::string, std::shared_
 					std::string src_vertex_name(temp);
 					std::string dest_vertex_name(temp_b);
 
-					delete[] temp; // TODO: check if memory leaks
-					delete[] temp_b; // TODO: check if memory leaks
+					delete[] temp;
+					delete[] temp_b;
 					
 					temp_graph.insertEdge(src_vertex_name, dest_vertex_name);
 				}

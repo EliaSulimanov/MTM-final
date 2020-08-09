@@ -88,7 +88,7 @@ graph graph::unite(const graph& lhg, const graph& rhg)
 {
 	graph result(lhg);
 	result.vertex_set.insert(rhg.vertex_set.begin(), rhg.vertex_set.end()); 
-	result.edge_set.insert(rhg.edge_set.begin(), rhg.edge_set.end()); // TODO: check if this works as expected
+	result.edge_set.insert(rhg.edge_set.begin(), rhg.edge_set.end()); 
 
 	return result;
 }
@@ -104,7 +104,7 @@ graph graph::intersect(const graph& lhg, const graph& rhg)
 		}
 	}
 
-	for (auto edge : lhg.edge_set) // TODO: check if this works as expected
+	for (auto edge : lhg.edge_set) 
 	{
 		if (rhg.edge_set.find(edge) != rhg.edge_set.end()) // exists in both
 		{
@@ -126,7 +126,7 @@ graph graph::diff(const graph& lhg, const graph& rhg)
 		}
 	}
 
-	for (auto edge : lhg.edge_set) // TODO: check if this works as expected
+	for (auto edge : lhg.edge_set) 
 	{
 		if (result.vertex_set.find(edge[0]) != result.vertex_set.end() &&
 			result.vertex_set.find(edge[1]) != result.vertex_set.end()) // edge vertexes are in the result graph
@@ -140,7 +140,7 @@ graph graph::diff(const graph& lhg, const graph& rhg)
 
 graph graph::cross(const graph& lhg, const graph& rhg)
 {
-	graph result; // TODO: test this. Not sure about the product
+	graph result; 
 
 	for (auto left_v : lhg.vertex_set)
 	{
@@ -154,7 +154,7 @@ graph graph::cross(const graph& lhg, const graph& rhg)
 	{
 		for (auto right_e : rhg.edge_set)
 		{
-			result.insertEdge("[" + left_e[0] + ";" + right_e[0] + "]", "[" + left_e[1] + ";" + right_e[1] + "]"); // TODO: check if vector is the right size
+			result.insertEdge("[" + left_e[0] + ";" + right_e[0] + "]", "[" + left_e[1] + ";" + right_e[1] + "]"); 
 		}
 	}
 
@@ -163,8 +163,8 @@ graph graph::cross(const graph& lhg, const graph& rhg)
 
 graph graph::complement(const graph& grap)
 {
-	graph result; // TODO: check on complex graphs
-	result.vertex_set = grap.vertex_set; // TODO: check if it alloc new memory for this or use the same
+	graph result; 
+	result.vertex_set = grap.vertex_set; 
 	for (auto left_v : grap.vertex_set) 
 	{
 		for (auto right_v : grap.vertex_set)
