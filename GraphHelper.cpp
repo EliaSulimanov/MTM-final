@@ -124,6 +124,7 @@ bool graphHelper::checkNoDuplicateCommands(std::vector<std::string> command)
 	int num_of_who = 0;
 	int num_of_quit = 0;
 	int num_of_reset = 0;
+	int num_of_save = 0;
 	for (auto word : command)
 	{
 		if (word.compare("print") == 0)
@@ -150,6 +151,10 @@ bool graphHelper::checkNoDuplicateCommands(std::vector<std::string> command)
 		{
 			num_of_reset++;
 		}
+		else if (word.compare("save") == 0)
+		{
+			num_of_save++;
+		}
 	}
 
 	if (num_of_who > 0 || num_of_quit > 0 || num_of_reset > 0)
@@ -157,14 +162,15 @@ bool graphHelper::checkNoDuplicateCommands(std::vector<std::string> command)
 		throw graphException("Invalid syntax, only one command per line allowed");
 	}
 
-	if (num_of_print > 1 || num_of_delete > 1 || num_of_equal > 1)
+	if (num_of_print > 1 || num_of_delete > 1 || num_of_equal > 1 || num_of_save > 1)
 	{
 		throw graphException("Invalid syntax, only one command per line allowed");
 	}
 
-	if ((num_of_print == 1 && (num_of_delete > 0 || num_of_equal > 0)) ||
-		(num_of_delete == 1 && (num_of_print > 0 || num_of_equal > 0)) ||
-		(num_of_equal == 1 && (num_of_delete > 0 || num_of_print > 0)))
+	if ((num_of_print == 1 && (num_of_delete > 0 || num_of_equal > 0 || num_of_save > 0)) ||
+		(num_of_delete == 1 && (num_of_print > 0 || num_of_equal > 0 || num_of_save > 0)) ||
+		(num_of_equal == 1 && (num_of_delete > 0 || num_of_print > 0 || num_of_save > 0)) ||
+		(num_of_save == 1) && (num_of_delete > 0 || num_of_equal > 0 || num_of_print > 0)) // New addition
 	{
 		throw graphException("Invalid syntax, only one command per line allowed");
 
@@ -750,8 +756,6 @@ std::shared_ptr<graph> graphHelper::loadgraph(std::map<std::string, std::shared_
 		}
 		catch (const std::exception& e)
 		{
-			// TODO: FOR DEBUG
-			std::cout << e.what() << std::endl;
 			throw graphException("Error occurred while loading the graph from the file: " + file_path);
 		}
 	}
