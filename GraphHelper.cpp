@@ -618,6 +618,10 @@ std::shared_ptr<graph> graphHelper::commandOperation(std::map<std::string, std::
 
 		if ((*iter).compare("(") == 0)
 		{
+			if (brackets_stack.empty())
+			{
+				throw graphException("Invalid brackets order");
+			}
 			brackets_stack.pop();
 		}
 
