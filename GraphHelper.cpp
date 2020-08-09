@@ -748,8 +748,10 @@ std::shared_ptr<graph> graphHelper::loadgraph(std::map<std::string, std::shared_
 		{
 			throw FatalgraphException("Fatal error- out of memory");
 		}
-		catch (const std::exception&)
+		catch (const std::exception& e)
 		{
+			// TODO: FOR DEBUG
+			std::cout << e.what() << std::endl;
 			throw graphException("Error occurred while loading the graph from the file: " + file_path);
 		}
 	}
