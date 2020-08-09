@@ -571,12 +571,44 @@ std::shared_ptr<graph> graphHelper::commandOperation(std::map<std::string, std::
 		throw graphException("Empty command");
 	}
 
-	// TODO: 603 was here, moved down
+ 	if (command[0].compare("(") == 0 && command[command.size() - 1].compare(")") == 0)
+ 	{
+		std::stack<size_t> pre_stack;
+		for (size_t i = 0; i < command.size(); i++)
+		{
+			if (i == command.size() - 1)
+			{
+				if (!pre_stack.empty())
+				{
+					if (pre_stack.top() == 0)
+					{
+						command.pop_back();
+						command.erase(command.begin());
+						return graphHelper::commandOperation(symbol_map, command, real_command);
+					}
+				}
+			}
+
+			if ((command[i]).compare("(") == 0)
+			{
+				pre_stack.push(i);
+			}
+
+			if ((command[i]).compare(")") == 0)
+			{
+				if (pre_stack.empty())
+				{
+					throw graphException("Invalid brackets order");
+				}
+				pre_stack.pop();
+			}
+		}
+ 	}
 
 	std::stack<std::string> brackets_stack;
 	
 	std::stack<std::string> crully_stack;
-
+	
 	for (auto iter = command.rbegin(); iter != command.rend(); iter++)
 	{
 		if ((*iter).compare(")") == 0)
@@ -600,14 +632,6 @@ std::shared_ptr<graph> graphHelper::commandOperation(std::map<std::string, std::
 			}
 		}
 	}
-
-	if (command[0].compare("(") == 0 && command[command.size() - 1].compare(")") == 0)
-	{
-		command.pop_back();
-		command.erase(command.begin());
-		return graphHelper::commandOperation(symbol_map, command, real_command);
-	}
-
 
 	if (command[0].compare("!") == 0) 
 	{
