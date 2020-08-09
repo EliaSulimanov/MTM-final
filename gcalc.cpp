@@ -92,10 +92,11 @@ void gcalcLoop(std::map<std::string, std::shared_ptr<graph>>& symbol_map, char* 
 			backup_in_stream = std::cin.rdbuf();
 			backup_out_stream = std::cout.rdbuf();
 
-			std::cin.rdbuf(ifs.rdbuf());
+			std::cin.rdbuf(ifs.rdbuf()); //TODO: disabled for debug
 			std::cout.rdbuf(ofs.rdbuf());
 			while (run && getline(ifs, command))
 			{
+				//std::cout << "Command: " << command << std::endl; // TODO: NEW FOR DEBUGING
 				try
 				{
 					std::vector<std::string> split_command = graphHelper::splitCommand(command);
@@ -157,14 +158,14 @@ void gcalcLoop(std::map<std::string, std::shared_ptr<graph>>& symbol_map, char* 
 		{
 			ifs.close();
 			std::string output_file_path(argv[2]);
-			std::cerr << "Error- unable to open output file: " << output_file_path << std::endl;
+			std::cerr << "Error: unable to open output file: " << output_file_path << std::endl;
 			return;
 		}
 	}
 	else
 	{
 		std::string input_file_path(argv[1]);
-		std::cerr << "Error- unable to open input file: " << input_file_path << std::endl;
+		std::cerr << "Error: unable to open input file: " << input_file_path << std::endl;
 		return;
 	}
 }
@@ -201,7 +202,7 @@ void eval(std::map<std::string, std::shared_ptr<graph>>& symbol_map, std::vector
 				}
 				else
 				{
-					throw graphException("Undefined variable");
+					throw graphException("Undefined variable: " + command[2]); // TODO: fix this throw, changed for debug
 				}
 			}
 			else // The argument is complex graph def
