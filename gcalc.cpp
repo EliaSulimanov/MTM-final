@@ -172,11 +172,18 @@ void gcalcLoop(std::map<std::string, std::shared_ptr<graph>>& symbol_map, char* 
 
 void deletegraph(std::map<std::string, std::shared_ptr<graph>>& symbol_map, std::string graphName) 
 {
-	try
+	if (symbol_map.find(graphName) != symbol_map.end())
 	{
-		symbol_map.erase(graphName); 
+		try
+		{
+			symbol_map.erase(graphName);
+		}
+		catch (std::exception&)
+		{
+			throw graphException("Graph not exist");
+		}
 	}
-	catch (std::exception)
+	else
 	{
 		throw graphException("Graph not exist");
 	}
