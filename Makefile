@@ -7,7 +7,7 @@ DEBUG_FLAG = -g
 COMP_FLAG = -std=c++11 --pedantic-errors -Wall -Werror -fPIC
 FNAM = gcalc.zip
 UTILF = design.pdf Makefile test_in.txt test_out.txt
-FILIST = gcalc.cpp graph.cpp graph.h graphHelper.cpp graphHelper.h graphException.h 
+FILIST = gcalc.cpp graph.cpp graph.h graph.i graphHelper.cpp graphHelper.h graphException.h 
 
 $(EXEC): $(OBJS)
 	$(CXX) $(DEBUG_FLAG) $(OBJS) -o $@
