@@ -316,6 +316,7 @@ std::shared_ptr<graph> graphHelper::commandTograph(std::map<std::string, std::sh
 		if (symbol_map.find(command[0]) == symbol_map.end())
 		{
 			throw graphException("Undefined variable: " + command[0]);
+			//throw graphException("Undefined variable 319 gcalcHelper: " + command[0]); // TODO: fix this throw, changed for debug
 		}
 		else
 		{	
@@ -603,6 +604,14 @@ std::shared_ptr<graph> graphHelper::commandOperation(std::map<std::string, std::
 		command.erase(command.begin());
 		return std::shared_ptr<graph>(new graph(graph::complement(*(commandOperation(symbol_map, command, real_command)))));
 	}
+	
+	// TODO: for debugging, should remove after 4.2
+// 	std::cout << "command[0]: " << command[0] << ", command[command.size() - 1]: " << command[command.size() - 1] << std::endl;
+// 	for (size_t i = 0; i < command.size(); i++)
+// 	{
+// 		std::cout << "command[" << i << "]: " << command[i] << std::endl;
+// 	}
+	// -------------------------------------------------------------------------------------------------------------------
 
 	if (command[0].compare("{") == 0 && command[command.size() - 1].compare("}") == 0)
 	{
@@ -620,6 +629,7 @@ std::shared_ptr<graph> graphHelper::commandOperation(std::map<std::string, std::
 			return loadgraph(symbol_map, command, real_command);
 		}
 		throw graphException("Undefined variable");
+		//throw graphException("Undefined variable 623 gcalcHelper: " + command[0]); // TODO: fix this throw, changed for debug
 	}
 
 	return symbol_map.at(command[0]);
