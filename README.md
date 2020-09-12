@@ -5,20 +5,32 @@ Grade: 96.
 This readme is under construction.
 
 ## Contents
- - [About The Project](#About-The-Project)
- - [Usage](#Usage)
-    - [Defining a new variable](#Defining-a-new-variable)
-    - [Assigning the result of an expression into another variable](#Assigning-the-result-of-an-expression-into-another-variable)
-    - [Runing one of the commands supported by the calculator](#Runing-one-of-the-commands-supported-by-the-calculator)
-    - [Notice](#Notice)
- - [Calculator Commands](#Calculator-Commands)
+ - [About The Project](#about-the-project)
+ - [Usage](#usage)
+    - [Defining a new variable](#defining-a-new-variable)
+    - [Assigning the result of an expression into another variable](#assigning-the-result-of-an-expression-into-another-variable)
+    - [Runing one of the commands supported by the calculator](#runing-one-of-the-commands-supported-by-the-calculator)
+    - [Notice](#notice)
+ - [Graph Syntax](#graph-syntax)
+ - [Expressions and Operators](#expressions-and-operators)
+    - [Union](#union)
+    - [Intersection](#intersection)
+    - [Difference](#difference)
+    - [Product](#product)
+    - [Complement](#complement)
+    - [Notice](#notice-1)
+ - [Calculator Commands](#calculator-commands)
     - [print(G)](#printg)
     - [delete(G)](#deleteg)
+    - [save(G, filename)](#saveg-filename)
+    - [G=load(filename)](#gloadfilename)
     - [who](#who)
     - [reset](#reset)
     - [quit](#quit)
-    - [Notice](#Notice-1)
- - [License](#License)
+    - [Notice](#notice-2)
+ - [Batch Mode](#batch-mode)
+ - [Execute Example](#execute-example)
+ - [License](#license)
 
 ## About The Project
 Graph (discrete mathematics) is a structure amounting to a set of objects in which some pairs of the object are in some sense "related". ([Wikipedia](https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)))  
@@ -51,6 +63,43 @@ You can also assign an existing graph to a new variable:
 * If the expression on the right side of the assignment contains an error, then the variable value on the left does not change.
 * A graph name that appears for the first time on the right side of a phrase (or as an argument of a command) without being previously defined carries an error.
 
+## Graph Syntax
+The characters that can appear in a vertex name are: English (lowercase and uppercase) letters, and the characters '\]', '\[', and '\;'.  
+If square brackets appear in the name of a vertex, they must be balanced, that is, for each opening bracket '\[' must have a closing bracket '\]' suitable after it, and vice versa, for each closing bracket '\]' there must be an opening bracket '\[' in front of him.  
+
+A directed edge is described by an orderly pair of vertices, separated by a comma and surrounded by '<' and '>'. For example, the edge <x2, x1> goes from vertex x2 to vertex x1.
+
+Graph G defined as: {v1, v2, ... , vn | e1, e2, ... , em}. List of n vertices, followed by a list of m edges.
+
+## Expressions and Operators
+### Union
+Unite two graphs unites both the vertices and the edges of the two graphs.  
+```G1 = G2 + G3```
+```gr = G1 + {a,b|<a,b>}```
+### Intersection
+Intersection between two graphs intersect both the vertices and the edges of the two graphs.  
+```G1 = myGraph ^ gr```
+```G2 = {a,b,c,d | <b,d> , <a,d>} ^ gr```
+### Difference
+The difference between two graphs G1 and G2 contains all the vertices in graph G1 that are not in graph G2, and all the edges from graph G1 if both end vertices of this edge exist in the result graph.  
+```diff = {a,b | <a,b>} - {a,c | <c,a>}```
+```diff = G1 - {a,c | <c,a>}```
+### Product
+The vertices and edges in the graph of the product are obtained from pairs of vertices / edges from graphs G1 and G2.
+For every possible pair of vertex v from G1 and vertex w from G2, a vertex named \[w; v\] in be in the result graph.  
+Also, for every possible pair of edges \<v2, v1\> from G1, and \<w2, w1\> from G2, there will be an edge from the vertex \[w1; v1\] to the vertex \[w2; v2] in the the product graph.
+```prod = {a,b | <a,b>} * {a,c | <c,a>}```
+```G2 = G1 * {a,c | <c,a>}```
+```G3 = G1 * prod```
+### Complement
+Complement of a graph is a graph in which the set of vertices is the same as that of the original graph, while the set of edges contains all possible edges that were not in the original graph.
+```G1 = !G2```
+```G3 = !{a,b,c | <a,b>}```
+#### Notice
+* The expression can contain a sequence of several operators, and the expression evaluated from left to right. ```G1 = G2 + G3 - G4```
+* The expression can contain graph names and graph literals. ```G2 = G1 + {a,b|<a,b>}```
+* You can use parentheses to change the evaluation order of a sequence of operators. ```G4 = G3 + (G2*G2)```
+
 ## Calculator Commands
 ### print(G)
 Print the content of the graph.
@@ -64,9 +113,15 @@ $
 x y
 y z
 z x
-```
+```  
+A graph literal, or exppression can be used insted of graph name.
 ### delete(G)
 Delete the graph named "G".
+### save(G, filename)
+Save the graph G to a file named "filename". Recommended extension: .gc  
+A graph literal, or exppression can be used insted of graph name.
+### G=load(filename)
+Load graph from file named "filename" into variable named G. Can be used inside an exppression, in this case no need to assign the load result.
 ### who
 Displays a list of all variables (graphs) defined.
 ```
@@ -82,6 +137,38 @@ Quit the graph calculator.
 #### Notice
 Function names are reserved words, they cannot be used as names of variables (graphs).
 
+## Batch Mode
+The program runs in automatic mode when run from the command line with two arguments, an input file and an output file.  
+For example: ```gcalc input.txt output.txt```.  
+
+## Execute Example
+```
+Gcalc> G1={x1,x2,x3,x4|<x4,x1>, <x3,x4>,<x2,x3>,<x1,x2>}
+Gcalc> G2 = { x1,y1 | <x1,y1> }
+Gcalc> H = G1 + G2
+Gcalc> print(H)
+x1
+x2
+x3
+x4
+y1
+$
+x1 x2
+x1 y1
+x2 x3
+x3 x4
+x4 x1
+Gcalc> who
+G1
+G2
+H
+Gcalc> reset
+Gcalc> print(H)
+Error: Undefined variable 'H'
+Gcalc> G1 {x,y|<y,x>}
+Error: Unrecognized command 'G1 {x,y|<y,x>}'
+Gcalc> quit
+```
 
 ## License
 The Unlicense.  
