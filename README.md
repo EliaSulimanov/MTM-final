@@ -2,7 +2,9 @@
 Technion Introduction to System Programming (234124) final project.  
 Grade: 96.
 
-This readme is under construction.
+<p align="center">
+  <img src="https://image.ibb.co/mBx97A/powerd-by-Elia-Sulimanov.jpg">
+</p>
 
 ## Contents
  - [About The Project](#about-the-project)
@@ -30,6 +32,21 @@ This readme is under construction.
     - [Notice](#notice-2)
  - [Batch Mode](#batch-mode)
  - [Execute Example](#execute-example)
+ - [Python Interface](#python-interface)
+    - [create()](#create)
+    - [destroy(graph)](#destroygraph)
+    - [addVertex(graph, v)](#addvertexgraph-v)
+    - [addEdge(graph, v1, v2)](#addedgegraph-v1-v2)
+    - [disp(graph)](#dispgraph)
+    - [graphUnion(graph_in1, graph_in2, graph_out)](#graphuniongraph_in1-graph_in2-graph_out)
+    - [graphIntersection(graph_in1, graph_in2, graph_out)](#graphintersectiongraph_in1-graph_in2-graph_out)
+    - [graphDifference(graph_in1, graph_in2, graph_out)](#graphdifferencegraph_in1-graph_in2-graph_out)
+    - [graphProduct(graph_in1, graph_in2, graph_out)](#graphproductgraph_in1-graph_in2-graph_out)
+    - [graphComplement(graph_in, graph_out)](#graphcomplementgraph_in-graph_out)
+ - [Python Execute Example](#python-execute-example)
+ - [Make](#make)
+    - [Compile](#compile)
+    - [Create The Library File](#create-the-library-file)
  - [License](#license)
 
 ## About The Project
@@ -37,7 +54,9 @@ Graph (discrete mathematics) is a structure amounting to a set of objects in whi
 Each object represents an element, for example a city, a person, a computer server.  
 A graph describes the relationship between the elements, for example a network of users in a social network.  
 The people are represented through the vertices and the connections between them through edges.  
-![Graph Demo](Readme/graph_demo.PNG)  
+<p align="center">
+  <img src="Readme/graph_demo.PNG">
+</p>
 This program is a shell graph calcutalor, which lets you unite, intersect, substract, cross and find the complement of a graph.
 "Gcalc>" tag will be prompted in the shell.
 
@@ -74,26 +93,26 @@ Graph G defined as: {v1, v2, ... , vn | e1, e2, ... , em}. List of n vertices, f
 ## Expressions and Operators
 ### Union
 Unite two graphs unites both the vertices and the edges of the two graphs.  
-```G1 = G2 + G3```
+```G1 = G2 + G3```  
 ```gr = G1 + {a,b|<a,b>}```
 ### Intersection
 Intersection between two graphs intersect both the vertices and the edges of the two graphs.  
-```G1 = myGraph ^ gr```
+```G1 = myGraph ^ gr```  
 ```G2 = {a,b,c,d | <b,d> , <a,d>} ^ gr```
 ### Difference
 The difference between two graphs G1 and G2 contains all the vertices in graph G1 that are not in graph G2, and all the edges from graph G1 if both end vertices of this edge exist in the result graph.  
-```diff = {a,b | <a,b>} - {a,c | <c,a>}```
+```diff = {a,b | <a,b>} - {a,c | <c,a>}```  
 ```diff = G1 - {a,c | <c,a>}```
 ### Product
 The vertices and edges in the graph of the product are obtained from pairs of vertices / edges from graphs G1 and G2.
 For every possible pair of vertex v from G1 and vertex w from G2, a vertex named \[w; v\] in be in the result graph.  
-Also, for every possible pair of edges \<v2, v1\> from G1, and \<w2, w1\> from G2, there will be an edge from the vertex \[w1; v1\] to the vertex \[w2; v2] in the the product graph.
-```prod = {a,b | <a,b>} * {a,c | <c,a>}```
-```G2 = G1 * {a,c | <c,a>}```
+Also, for every possible pair of edges \<v2, v1\> from G1, and \<w2, w1\> from G2, there will be an edge from the vertex \[w1; v1\] to the vertex \[w2; v2] in the the product graph.  
+```prod = {a,b | <a,b>} * {a,c | <c,a>}```  
+```G2 = G1 * {a,c | <c,a>}```  
 ```G3 = G1 * prod```
 ### Complement
-Complement of a graph is a graph in which the set of vertices is the same as that of the original graph, while the set of edges contains all possible edges that were not in the original graph.
-```G1 = !G2```
+Complement of a graph is a graph in which the set of vertices is the same as that of the original graph, while the set of edges contains all possible edges that were not in the original graph.  
+```G1 = !G2```  
 ```G3 = !{a,b,c | <a,b>}```
 #### Notice
 * The expression can contain a sequence of several operators, and the expression evaluated from left to right. ```G1 = G2 + G3 - G4```
@@ -169,6 +188,77 @@ Gcalc> G1 {x,y|<y,x>}
 Error: Unrecognized command 'G1 {x,y|<y,x>}'
 Gcalc> quit
 ```
+
+## Python Interface
+The program can be used in python, by including the library to your code.
+### create()
+Return pointer to new graph.
+### destroy(graph)
+Free the graph passed as a parameter.
+### addVertex(graph, v)
+Add the vertex v (given as a string) to the graph.  
+The function returns the graph.
+### addEdge(graph, v1, v2)
+Add the edge <v1, v2> to the graph.  
+The function returns the graph.
+### disp(graph)
+Print the graph to stdout.
+### graphUnion(graph_in1, graph_in2, graph_out)
+Unite two graphs.  
+graph_out must be a pointer to a pre-existing graph, and it will be overwriten.
+### graphIntersection(graph_in1, graph_in2, graph_out)
+Intersect two graphs.  
+graph_out must be a pointer to a pre-existing graph, and it will be overwriten.
+### graphDifference(graph_in1, graph_in2, graph_out)
+Substract two graphs.  
+graph_out must be a pointer to a pre-existing graph, and it will be overwriten.
+### graphProduct(graph_in1, graph_in2, graph_out)
+Cross two graphs.  
+graph_out must be a pointer to a pre-existing graph, and it will be overwriten.
+### graphComplement(graph_in, graph_out)
+Get the complement of a graph.  
+graph_out must be a pointer to a pre-existing graph, and it will be overwriten.
+
+## Python Execute Example
+```Python
+>>> import graph as gw
+>>> g1 = gw.create()
+>>> gw.disp(g1)
+$
+>>> g1 = gw.addVertex(g1, 'a')
+>>> g1 = gw.addVertex(g1, 'b')
+>>> gw.disp(gw.addEdge(g1, 'a', 'b'))
+a
+b
+$
+a b
+>>> gw.addEdge(g1, 'a', 'c')
+Error: Cannot add edge <a,c> due to missing endpoint.
+>>> g2 = gw.create()
+>>> g2 = gw.addVertex(g2, 'c')
+>>> gw.disp(gw.graphUnion(g1, g2, g1))
+a
+b
+c
+$
+a b
+>>> gw.disp(g1)
+a
+b
+c
+$
+a b
+>>> gw.destroy(g2)
+>>> gw.destroy(g1)
+```
+
+## Make
+### Compile
+Just use ```make``` in your project directory.
+### Create The Library File
+Use ```make libgraph.a``` to create the lib file.  
+Than, use ```swig -python -o graph_wrap.c graph.i``` to create the python interface.   
+Lastly, use ```g++ -std=c++11 -DNDEBUG --pedantic-errors -Wall -Werror -I/usr/local/include/python3.6m -fPIC -shared graph_wrap.c libgraph.a -o _graph.so``` to create the python library file.
 
 ## License
 The Unlicense.  
