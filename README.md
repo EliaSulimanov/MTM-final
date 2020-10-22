@@ -1,6 +1,6 @@
 # GCalc - Graph Calculator
 Technion Introduction to System Programming (234124) final project.  
-Grade: 96.
+Grade: 95.
 
 <p align="center">
   <img src="https://image.ibb.co/mBx97A/powerd-by-Elia-Sulimanov.jpg">
